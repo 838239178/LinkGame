@@ -53,12 +53,23 @@ public class Block extends JComponent {
     }
 
     private class MouseListenerInner extends MouseAdapter {
+        private boolean choose = false;
+
         @Override
-        public void mouseClicked(MouseEvent e) {
-            Point location = getLocation();
-            System.out.println("click" + location);
-            setSelected(!isSelected());
-            repaint();
+        public void mousePressed(MouseEvent e) {
+            Rectangle rec = new Rectangle(getWidth(),getHeight());
+            if(rec.contains(e.getPoint())){
+                choose = true;
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if(choose){
+                setSelected(!isSelected());
+                repaint();
+                choose = false;
+            }
         }
     }
 }

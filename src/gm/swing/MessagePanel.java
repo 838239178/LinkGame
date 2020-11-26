@@ -50,11 +50,8 @@ public class MessagePanel extends JPanel {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                // TODO Auto-generated method stub
-                SwingUtilities.invokeLater(() -> {
-                    timeBar.setValue(lastTime--);
-                    repaint();
-                });
+                timeBar.setValue(lastTime--);
+                repaint();
             }
         }, 0, 1000);
     }
