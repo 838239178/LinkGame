@@ -1,6 +1,18 @@
 # 《连连看》 Java课程设计方案 
 
-> @author 施嘉宏	@startDate 2020.11.20	@lastModifiedDate 2020.11.26
+> @author 施嘉宏	@startDate 2020.11.20	@lastModifiedDate 2020.12.03
+
+## 目录
+
+[TOC]
+
+
+
+
+
+
+
+
 
 ## Swing界面组成	
 
@@ -34,7 +46,8 @@
 
 #### 界面结构图
 
-![结构图](http://assets.processon.com/chart_image/5fbe6589079129461564cb97.png)
+<div align=center><img src="http://assets.processon.com/chart_image/5fbe6589079129461564cb97.png" alt="界面结构" style="zoom:50%;" />
+
 
 ### 类的封装
 
@@ -101,7 +114,6 @@
   3. 双拐点：两方块坐标以及两个拐点，用四个点画线段，应注意线段总是在X或Y轴方向上。
 - 刷新GameMap后，遍历Blocks，重置Blocks状态
 - 提示两个可以相消的方块。
-- 当<u>方块完全消除</u>后调用自定义监听器。
 - 当<u>消除一次方块</u>后调用自定义监听器。
 
 #### Block
@@ -130,6 +142,12 @@
 *extends JDialog*
 
 显示关于该游戏以及该项目的信息。
+
+#### ScaleIcon
+
+*implements Icon*
+
+实现图片随容器大小变化而变化
 
 
 
@@ -198,12 +216,14 @@
 
 #### 判断流程图
 
-![判断顺序](http://assets.processon.com/chart_image/5fb9fe8b6376895bf97aa12a.png)
-  
+<div align=left><img src="http://assets.processon.com/chart_image/5fb9fe8b6376895bf97aa12a.png" alt="判断顺序" style="zoom:65%;" />
+
+
+
 #### 连通示意图
 
-![示意图](https://i.loli.net/2020/11/22/mxpfO8b29MYSCET.png)
-  
+<div align=center><img src="https://i.loli.net/2020/11/22/mxpfO8b29MYSCET.png" alt="判断顺序" style="zoom:80%;" />
+
 ### 类的封装
 
 #### LinkType

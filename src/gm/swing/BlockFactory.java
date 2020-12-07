@@ -8,8 +8,14 @@ public enum BlockFactory {
 
     public Block getBlock(int id){
         //test
-        Image img = new ImageIcon("img//test.png").getImage();
+        Image img = new ImageIcon("img//b"+id+".png").getImage();
         return new Block(id, img);
+    }
+
+    public void resetBlock(Block src, int id){
+        Image img = new ImageIcon("img//b"+id+".png").getImage();
+        src.setIcon(img);
+        src.setId(id);
     }
 
 }
