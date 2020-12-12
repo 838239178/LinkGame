@@ -4,11 +4,8 @@ import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Scanner;
 
 public class AboutDialog extends JDialog {
     private static final String infoUrl = "info/information.html";

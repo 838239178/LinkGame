@@ -25,12 +25,13 @@ public class GameClient extends JFrame {
     private MessagePanel messagePanel;
 
     private int gameLevel;
-    private String onShowPanel;
+    private String sceneName;
 
     public GameClient() {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+        this.setTitle("连连看");
 
         //region ...initial panels
         aboutDialog = new AboutDialog(this);
@@ -49,8 +50,8 @@ public class GameClient extends JFrame {
             aboutDialog.dispose();
         });
 
-        overPanel.addExitActonListener(e->switchPanel("entry"));
-        overPanel.addRestartActonListener(e->restartGame());
+        overPanel.addExitActonListener(e -> switchPanel("entry"));
+        overPanel.addRestartActonListener(e -> restartGame());
         //endregion
 
         //region ...initial menu
@@ -69,25 +70,40 @@ public class GameClient extends JFrame {
             quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
             quit.addActionListener(e -> {
                 System.out.println("quit");
-                if (onShowPanel.equals("play"))
+                if (sceneName.equals("play"))
                     gameExit();
             });
 
-            resizeMenu.add("restore").addActionListener(e->scaleSize(1));
-            resizeMenu.add("x2").addActionListener(e->scaleSize(2));
-            resizeMenu.add("x3").addActionListener(e->scaleSize(3));
+            resizeMenu.add("restore").addActionListener(e -> scaleSize(1));
+            resizeMenu.add("x2").addActionListener(e -> scaleSize(2));
+            resizeMenu.add("x3").addActionListener(e -> scaleSize(3));
 
             settingMenu.add(resizeMenu);
             settingMenu.add("about").addActionListener(e -> aboutDialog.setVisible(true));
 
             restart.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
-            restart.addActionListener(e -> restartGame());
+            restart.addActionListener(e -> {
+                if (sceneName.equals("play")) {
+                    restartGame();
+                }
+            });
 
             refresh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK));
-            refresh.addActionListener(e -> gamePanel.refreshBlocks());
+            refresh.addActionListener(e -> {
+                if (sceneName.equals("play")) {
+                    gamePanel.refreshBlocks();
+                    messagePanel.addRefreshCount(1);
+                }
+            });
 
             tips.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK));
-            tips.addActionListener(e -> gamePanel.tipBlock());
+            tips.addActionListener(e -> {
+                if (sceneName.equals("play")) {
+                    gamePanel.tipBlock();
+                    messagePanel.addTipCount(1);
+                }
+            });
+
 
             gameMenu.add(refresh);
             gameMenu.add(quit);
@@ -130,7 +146,7 @@ public class GameClient extends JFrame {
         this.getLayeredPane().add(backImage, Integer.valueOf(Integer.MIN_VALUE));
         this.getLayeredPane().setOpaque(true);
         this.getLayeredPane().setBackground(Color.darkGray);
-        setAllPanelOpaque((JPanel)this.getContentPane(), false);
+        setAllPanelOpaque((JPanel) this.getContentPane(), false);
         //endregion
 
         //程序由entry panel开始
@@ -154,14 +170,14 @@ public class GameClient extends JFrame {
         }
     }
 
-    public void scaleSize(int scale){
-        this.setSize(default_width*scale, default_height*scale);
-        backImage.setBounds(0,0, getWidth(), getHeight());
+    public void scaleSize(int scale) {
+        this.setSize(default_width * scale, default_height * scale);
+        backImage.setBounds(0, 0, getWidth(), getHeight());
     }
 
     private void switchPanel(String panelName) {
         ((CardLayout) switchPanel.getLayout()).show(switchPanel, panelName);
-        onShowPanel = panelName;
+        sceneName = panelName;
     }
 
     /**
@@ -173,8 +189,8 @@ public class GameClient extends JFrame {
         {
             BorderLayout layout = (BorderLayout) mainPanel.getLayout();
             int vGap = (15 - getGameLevel()) * 5 + 2;
-            double hGap = vGap * (getWidth()*1.5/getHeight());
-            layout.setHgap((int)hGap);
+            double hGap = vGap * (getWidth() * 1.5 / getHeight());
+            layout.setHgap((int) hGap);
             layout.setVgap(vGap);
         }
         //endregion
@@ -183,7 +199,7 @@ public class GameClient extends JFrame {
         gamePanel = new GamePanel(getGameLevel());
 
         gamePanel.addLinkBlockListener(e -> messagePanel.addBlockSource(1));
-        messagePanel.addTimeOutListener(e-> gameOver());
+        messagePanel.addTimeOutListener(e -> gameOver());
 
         mainPanel.add(BorderLayout.NORTH, messagePanel);
         mainPanel.add(BorderLayout.CENTER, gamePanel);
@@ -214,7 +230,7 @@ public class GameClient extends JFrame {
 
     private void gameOver() {
         overPanel.setLastTime(messagePanel.getLastTime());
-        overPanel.setPoints(messagePanel.getBlockSource());
+        overPanel.setPoints(messagePanel.getSource());
         switchPanel("over");
     }
 
