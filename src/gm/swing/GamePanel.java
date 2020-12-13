@@ -1,52 +1,74 @@
 package gm.swing;
 
-//import gm.game.GameMap;
-
 import gm.game.GameMap;
 import gm.game.LinkResult;
 import gm.game.LinkType;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Logger;
 
 public class GamePanel extends JPanel {
+    public static final String LINK_SOUND = "mic/link_sound.wav";
+    public static final String TOUCH_SOUND = "mic/touch_sound.wav";
+
     private GameMap map;
+
     /**
      * 已选择的方块1
      */
     private Block currentBlock1;
+
     /**
      * 已选择的方块2
      */
     private Block currentBlock2;
+
     /**
      * 通知画线的标记位
      */
     private boolean drawLine;
+
     /**
      * 连接线段的端点集合
      */
     private final ArrayList<Point> linePoints;
+
     /**
      * 所有方块的集合
      */
     private final ArrayList<Block> blocks;
+
     /**
      * 方块消除事件的监听器
      */
     private final EventListenerList linkBlockListeners;
 
+    /**
+     * 音频播放
+     */
+    private Sound linkSound;
+    private Sound touchSound;
+
     public GamePanel(int level) {
         //region ...default initial
         this.map = new GameMap();
+        try {
+            linkSound = new Sound(LINK_SOUND);
+            touchSound = new Sound(TOUCH_SOUND);
+        } catch (IOException | UnsupportedAudioFileException e) {
+            e.printStackTrace();
+            linkSound = null;
+            touchSound = null;
+        }
         this.linkBlockListeners = new EventListenerList();
         this.blocks = new ArrayList<>();
         this.linePoints = new ArrayList<>();
@@ -81,6 +103,8 @@ public class GamePanel extends JPanel {
                 if (isSelectedDoubleBlock()) {
                     tryLinkBlocks();
                 }
+
+                touchSound.play();
             });
             this.add(b);
         }
@@ -118,8 +142,8 @@ public class GamePanel extends JPanel {
      * 获取相消方块的坐标参数、控制画线周期
      * 通知组件画线，并在一段时间后取消通知、清除点信息
      *
-     * @param link
-     * @param delay
+     * @param link 线的端点
+     * @param delay 画线持续时间（ms)
      */
     private void startDrawLines(LinkResult link, int delay) {
         drawLine = true;
@@ -153,6 +177,7 @@ public class GamePanel extends JPanel {
                     return;
             }
 
+            linkSound.play();
             repaint();
 
             //一段时间后清除方块和线段

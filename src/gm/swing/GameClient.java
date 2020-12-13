@@ -2,7 +2,9 @@ package gm.swing;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
 public class GameClient extends JFrame {

@@ -1,10 +1,12 @@
 package gm.swing;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class EntryPanel extends JPanel {
     private JButton[] levelButton;
@@ -17,7 +19,16 @@ public class EntryPanel extends JPanel {
     private final EventListenerList LevelChangeListenerList;
     private final EventListenerList clientExitListenerList;
 
+    private Sound touchSound;
+
     public EntryPanel(){
+        try {
+            touchSound = new Sound(GamePanel.TOUCH_SOUND);
+        } catch (IOException | UnsupportedAudioFileException e) {
+            e.printStackTrace();
+            touchSound = null;
+        }
+
         //region ...initial components
         LevelChangeListenerList = new EventListenerList();
         clientExitListenerList = new EventListenerList();
@@ -34,11 +45,23 @@ public class EntryPanel extends JPanel {
         //endregion
 
         //region ...add action listener
-        returnBtn.addActionListener(e-> switchPanel("enter"));
-        startBtn.addActionListener(e-> switchPanel("level"));
-        exitBtn.addActionListener(this::invokeGameExitListener);
+        returnBtn.addActionListener(e-> {
+            touchSound.play();
+            switchPanel("enter");
+        });
+        startBtn.addActionListener(e-> {
+            touchSound.play();
+            switchPanel("level");
+        });
+        exitBtn.addActionListener(e-> {
+            touchSound.play();
+            invokeGameExitListener(e);
+        });
         for (JButton button : levelButton) {
-            button.addActionListener(this::invokeLevelChangeListener);
+            button.addActionListener(e -> {
+                touchSound.play();
+                invokeLevelChangeListener(e);
+            });
         }
         //endregion
 
