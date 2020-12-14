@@ -1,6 +1,6 @@
 # 《连连看》 Java课程设计方案 
 
-> @author 施嘉宏	@startDate 2020.11.20	@lastModifiedDate 2020.12.03
+> @author 施嘉宏	@startDate 2020.11.20	@lastModifiedDate 2020.12.14
 
 ## 目录
 
