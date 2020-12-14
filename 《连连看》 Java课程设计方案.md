@@ -46,8 +46,7 @@
 
 #### 界面结构图
 
-<div align=center><img src="http://assets.processon.com/chart_image/5fbe6589079129461564cb97.png" alt="界面结构" style="zoom:50%;" />
-
+http://assets.processon.com/chart_image/5fbe6589079129461564cb97.png
 
 ### 类的封装
 
@@ -220,13 +219,12 @@
 
 #### 判断流程图
 
-<div align=left><img src="http://assets.processon.com/chart_image/5fb9fe8b6376895bf97aa12a.png" alt="判断顺序" style="zoom:65%;" />
-
+http://assets.processon.com/chart_image/5fb9fe8b6376895bf97aa12a.png
 
 
 #### 连通示意图
 
-<div align=center><img src="https://i.loli.net/2020/11/22/mxpfO8b29MYSCET.png" alt="判断顺序" style="zoom:80%;" />
+https://i.loli.net/2020/11/22/mxpfO8b29MYSCET.png
 
 ### 类的封装
 
