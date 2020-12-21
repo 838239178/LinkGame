@@ -3,6 +3,8 @@ package gm.swing;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
@@ -48,23 +50,24 @@ public class GameClient extends JFrame {
             gameStart();
         });
         entryPanel.addClientExitListener(e -> {
-            dispose();
             aboutDialog.dispose();
+            dispose();
         });
 
-        overPanel.addExitActonListener(e -> switchPanel("entry"));
+        overPanel.addExitActonListener(e -> gameExit());
         overPanel.addRestartActonListener(e -> restartGame());
         //endregion
 
         //region ...initial menu
         {
-            JMenu settingMenu = new JMenu("setting (Alt+S)");
-            JMenu gameMenu = new JMenu("game (Alt+G)");
-            JMenu resizeMenu = new JMenu("resize");
-            JMenuItem restart = new JMenuItem("restart");
-            JMenuItem refresh = new JMenuItem("refresh map");
-            JMenuItem tips = new JMenuItem("tips");
+            JMenu settingMenu = new JMenu("Setting (Alt+S)");
+            JMenu gameMenu = new JMenu("Game (Alt+G)");
+            JMenu resizeMenu = new JMenu("Resize");
+            JMenuItem restart = new JMenuItem("Restart");
+            JMenuItem refresh = new JMenuItem("Refresh");
+            JMenuItem tips = new JMenuItem("Tips");
             JMenuItem quit = new JMenuItem("Quit");
+            JMenuItem pause = new JMenuItem("Pause");
 
             gameMenu.setMnemonic(KeyEvent.VK_G);
             settingMenu.setMnemonic(KeyEvent.VK_S);
@@ -106,11 +109,14 @@ public class GameClient extends JFrame {
                 }
             });
 
+            pause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
+            pause.addActionListener(e -> gamePause());
 
             gameMenu.add(refresh);
             gameMenu.add(quit);
             gameMenu.add(tips);
             gameMenu.add(restart);
+            gameMenu.add(pause);
 
             menuBar.add(gameMenu);
             menuBar.add(settingMenu);
@@ -153,6 +159,20 @@ public class GameClient extends JFrame {
 
         //程序由entry panel开始
         switchPanel("entry");
+
+        //循环播放背景音乐
+        try {
+            Sound bgm = new Sound(Sound.Path.BGM);
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    System.out.println("bgm play, duration:" + bgm.getDuration());
+                    bgm.play();
+                }
+            }, 1, bgm.getDuration());
+        } catch (IOException | UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -216,10 +236,14 @@ public class GameClient extends JFrame {
     private void restartGame() {
         gamePanel.reset();
         messagePanel.reset();
+        switchPanel("play");
     }
 
-    private int getGameLevel() {
-        return gameLevel;
+    private void gamePause() {
+        //TODO 模态窗口+暂停计时器
+        messagePanel.stopCountDown();
+        JOptionPane.showMessageDialog(this,"游戏已暂停，点击继续进行游戏","暂停", JOptionPane.QUESTION_MESSAGE, new ImageIcon("img/b1.png"));
+        messagePanel.startCountDown();
     }
 
     private void gameExit() {
@@ -231,9 +255,15 @@ public class GameClient extends JFrame {
     }
 
     private void gameOver() {
-        overPanel.setLastTime(messagePanel.getLastTime());
-        overPanel.setPoints(messagePanel.getSource());
-        switchPanel("over");
+        if(sceneName.equals("play")) {
+            overPanel.setLastTime(messagePanel.getLastTime());
+            overPanel.setPoints(messagePanel.getSource());
+            switchPanel("over");
+        }
+    }
+
+    private int getGameLevel() {
+        return gameLevel;
     }
 
     public static void main(String[] args) {

@@ -17,9 +17,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class GamePanel extends JPanel {
-    public static final String LINK_SOUND = "mic/link_sound.wav";
-    public static final String TOUCH_SOUND = "mic/touch_sound.wav";
-
     private GameMap map;
 
     /**
@@ -62,8 +59,8 @@ public class GamePanel extends JPanel {
         //region ...default initial
         this.map = new GameMap();
         try {
-            linkSound = new Sound(LINK_SOUND);
-            touchSound = new Sound(TOUCH_SOUND);
+            linkSound = new Sound(Sound.Path.LINK_SOUND);
+            touchSound = new Sound(Sound.Path.TOUCH_SOUND);
         } catch (IOException | UnsupportedAudioFileException e) {
             e.printStackTrace();
             linkSound = null;
@@ -79,11 +76,11 @@ public class GamePanel extends JPanel {
         //endregion
 
         //region ...initial blocks
-        for(int y = 1; y<=level; y++){
-            for(int x = 1; x<=level; x++){
-                int id = map.getId(y,x);
+        for (int y = 1; y <= level; y++) {
+            for (int x = 1; x <= level; x++) {
+                int id = map.getId(y, x);
                 Block block = BlockFactory.INSTANCE.getBlock(id);
-                block.setPositionOnMap(new Point(x,y));
+                block.setPointOnMap(new Point(x, y));
                 blocks.add(block);
             }
         }
@@ -92,6 +89,16 @@ public class GamePanel extends JPanel {
         for (Block b : blocks) {
             b.addBlockClickedListener(e -> {
                 Block current = (Block) e.getSource();
+
+                //如果是反选，消除引用
+                if (!current.isSelected()) {
+                    if (current == currentBlock1) {
+                        currentBlock1 = null;
+                    } else if (current == currentBlock2) {
+                        currentBlock2 = null;
+                    }
+                    return;
+                }
 
                 if (currentBlock1 == null) currentBlock1 = current;
                 else if (currentBlock2 == null) currentBlock2 = current;
@@ -125,14 +132,16 @@ public class GamePanel extends JPanel {
     }
 
     /**
-     * 根据数据表下标找到对应方块
+     * 根据 game map 下标找到对应方块
      *
      * @param pointOnMap 在GameMap中的下标
      * @return 对应的Block对象，未找到返回null
      */
     private Block findBlockByMapPoint(Point pointOnMap) {
+        //可行方案2 ： game map 下标对应 block 数组下标 pointOnMap.y * n + pointOnMap.x
+        //return blocks[pointOnMap.y * n + pointOnMap.x]
         for (Block block : blocks) {
-            if (block.getPositionOnMap().equals(pointOnMap)) return block;
+            if (block.getPointOnMap().equals(pointOnMap)) return block;
         }
         return null;
     }
@@ -142,7 +151,7 @@ public class GamePanel extends JPanel {
      * 获取相消方块的坐标参数、控制画线周期
      * 通知组件画线，并在一段时间后取消通知、清除点信息
      *
-     * @param link 线的端点
+     * @param link  线的端点
      * @param delay 画线持续时间（ms)
      */
     private void startDrawLines(LinkResult link, int delay) {
@@ -160,7 +169,7 @@ public class GamePanel extends JPanel {
                     break;
                 case DOUBLE_CORNER_LINK:
                     //需判断点和拐点是否在同一条线上
-                    if(firstCorner.y != firstPoint.y && firstCorner.x != firstPoint.x){
+                    if (firstCorner.y != firstPoint.y && firstCorner.x != firstPoint.x) {
                         firstCorner = secondCorner;
                         secondCorner = link.getFirstCorner();
                     }
@@ -191,11 +200,11 @@ public class GamePanel extends JPanel {
                     linePoints.clear();
                     repaint();
                 }
-            },delay);
+            }, delay);
 
         } catch (NullPointerException e) {
             cancelSelect();
-            drawLine=false;
+            drawLine = false;
         }
     }
 
@@ -203,11 +212,10 @@ public class GamePanel extends JPanel {
      * 尝试消除两个方块
      * 若未选择两方块则不会执行
      * 执行后判断是否能够消除
-     *
      */
     private void tryLinkBlocks() {
         if (isSelectedDoubleBlock()) {
-            LinkResult res = map.isLink(currentBlock1.getPositionOnMap(), currentBlock2.getPositionOnMap());
+            LinkResult res = map.isLink(currentBlock1.getPointOnMap(), currentBlock2.getPointOnMap());
             if (res.getLinkType() != LinkType.NO_LINK) {
                 LinkBlocks(res);
             } else {
@@ -222,16 +230,17 @@ public class GamePanel extends JPanel {
      * @param link 连接的结果
      */
     private void LinkBlocks(LinkResult link) {
-        map.remove(currentBlock1.getPositionOnMap(), currentBlock2.getPositionOnMap());
+        map.remove(currentBlock1.getPointOnMap(), currentBlock2.getPointOnMap());
         startDrawLines(link, 500);
         invokeLinkBlockListener(new ActionEvent(this, 0, "link blocks"));
     }
 
     /**
      * 触发消除方块后调用
+     *
      * @param e 触发事件
      */
-    private void invokeLinkBlockListener(ActionEvent e){
+    private void invokeLinkBlockListener(ActionEvent e) {
         for (ActionListener listener : linkBlockListeners.getListeners(ActionListener.class)) {
             listener.actionPerformed(e);
         }
@@ -239,10 +248,11 @@ public class GamePanel extends JPanel {
 
     /**
      * 是否进行了一组选择
-     * @return true if had chosen two blocks
+     *
+     * @return true if had chosen two different blocks
      */
     private boolean isSelectedDoubleBlock() {
-        return currentBlock1 != null && currentBlock2 != null;
+        return currentBlock1 != null && currentBlock2 != null && currentBlock1 != currentBlock2;
     }
 
     private void cancelSelect() {
@@ -253,12 +263,11 @@ public class GamePanel extends JPanel {
 
     /**
      * 更新方块，方块分布发生变化时使用
-     *
      */
-    private void updateBlocks(){
+    private void updateBlocks() {
         for (Block block : blocks) {
-            int idOnMap = map.getId(block.getPositionOnMap().y,block.getPositionOnMap().x);
-            if(block.getId() != idOnMap){
+            int idOnMap = map.getId(block.getPointOnMap().y, block.getPointOnMap().x);
+            if (block.getId() != idOnMap) {
                 BlockFactory.INSTANCE.resetBlock(block, idOnMap);
             }
         }
@@ -268,7 +277,7 @@ public class GamePanel extends JPanel {
     /**
      * 重新随机方块位置
      */
-    public void refreshBlocks(){
+    public void refreshBlocks() {
         map.refresh();
         updateBlocks();
     }
@@ -279,8 +288,8 @@ public class GamePanel extends JPanel {
      *
      * @param link 提示方块构成的点的信息
      */
-    private void tip(LinkResult link){
-        try{
+    private void tip(LinkResult link) {
+        try {
             Block block1 = findBlockByMapPoint(link.getFirstPoint());
             Block block2 = findBlockByMapPoint(link.getSecondPoint());
             block1.setSelected(true);
@@ -294,16 +303,15 @@ public class GamePanel extends JPanel {
                     block2.setSelected(false);
                 }
             }, 500);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
     /**
      * 提示两个可消除方块
-     *
      */
-    public void tipBlock(){
+    public void tipBlock() {
         LinkResult res = map.findLinkedPoint();
         tip(res);
     }
@@ -311,7 +319,7 @@ public class GamePanel extends JPanel {
     /**
      * 重新生成游戏
      */
-    public void reset(){
+    public void reset() {
         this.map = new GameMap();
         cancelSelect();
         updateBlocks();

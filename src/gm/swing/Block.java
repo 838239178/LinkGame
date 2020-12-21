@@ -2,7 +2,6 @@ package gm.swing;
 
 import gm.game.GameMap;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import java.awt.*;
@@ -15,14 +14,14 @@ public class Block extends JComponent {
     private int id;
     private Image icon;
     private final Image background;
-    private Point positionOnMap;
+    private Point pointOnMap;
     private boolean selected;
     private boolean isBlank;
     private final EventListenerList blockClickedListenerList;
 
     public Block(int id, Image icon) {
         this.id = id;
-        this.isBlank = false;
+        this.isBlank = (id == GameMap.BLANK_BLOCK);
         this.icon = icon;
         this.background = new ImageIcon("img/b_back.png").getImage();
         this.blockClickedListenerList = new EventListenerList();
@@ -31,22 +30,24 @@ public class Block extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(background,0,0,getWidth(), getHeight(),null);
-        g2d.drawImage(icon, 10, 10,getWidth()-20, getHeight()-20, null);
-        if (isSelected()) {
-            g2d.setColor(Color.red);
-            g2d.setStroke(new BasicStroke(getWidth() / 10.0f));
-            g2d.drawRect(0, 0, getWidth(), getHeight());
+        if(!isBlank) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+            g2d.drawImage(icon, 10, 10, getWidth() - 20, getHeight() - 20, null);
+            if (isSelected()) {
+                g2d.setColor(Color.red);
+                g2d.setStroke(new BasicStroke(getWidth() / 10.0f));
+                g2d.drawRect(0, 0, getWidth(), getHeight());
+            }
         }
     }
 
-    public void setPositionOnMap(Point positionOnMap) {
-        this.positionOnMap = positionOnMap;
+    public void setPointOnMap(Point pointOnMap) {
+        this.pointOnMap = pointOnMap;
     }
 
-    public Point getPositionOnMap() {
-        return positionOnMap;
+    public Point getPointOnMap() {
+        return pointOnMap;
     }
 
     public void addBlockClickedListener(ActionListener l) {
@@ -62,6 +63,7 @@ public class Block extends JComponent {
     @Override
     public Point getLocation() {
         Point res = super.getLocation();
+        //取中心点
         return new Point(res.x + getWidth() / 2, res.y + getHeight() / 2);
     }
 
@@ -92,22 +94,22 @@ public class Block extends JComponent {
     }
 
     private class MouseListenerInner extends MouseAdapter {
-        private boolean choose = false;
+        private boolean onPressed = false;
 
         @Override
         public void mousePressed(MouseEvent e) {
             Rectangle rec = new Rectangle(getWidth(), getHeight());
             if (rec.contains(e.getPoint())) {
-                choose = true;
+                onPressed = true;
             }
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            if (choose && !isBlank) {
+            if (onPressed && !isBlank) {
                 setSelected(!isSelected());
                 repaint();
-                choose = false;
+                onPressed = false;
                 invokeBlockClickedListener(new ActionEvent(e.getSource(), e.getID(), "click block"));
             }
         }

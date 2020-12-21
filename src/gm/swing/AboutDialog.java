@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class AboutDialog extends JDialog {
-    private static final String infoUrl = "info/information.html";
+    private static final String INFORMATION_HTML = "info/information.html";
 
     public AboutDialog(Frame owner) {
         super(owner, "关于这款游戏", true);
@@ -18,7 +18,7 @@ public class AboutDialog extends JDialog {
 
         JPanel panel = new JPanel();
 
-        File infoFile = new File(infoUrl);
+        File infoFile = new File(INFORMATION_HTML);
 
         JEditorPane editorPane = new JEditorPane();
         editorPane.setEditable(false);

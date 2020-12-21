@@ -14,23 +14,23 @@ public class OverPanel extends JPanel {
     public OverPanel() {
         this.setLayout(new BorderLayout(20,1));
 
-        JPanel container = new JPanel(new BorderLayout(50,5));
+        JPanel container = new JPanel(new BorderLayout(50,1));
         JPanel labelPanel1 = new JPanel(new GridLayout(4,1,5,20));
         JPanel labelPanel2 = new JPanel(new GridLayout(4,1,5,20));
         JPanel buttonPanel = new JPanel(new GridLayout(1,5,20,20));
         JPanel titlePanel = new JPanel(new GridLayout(1,3,1,1));
-        JLabel label1 = new JLabel();
-        JLabel label2 = new JLabel();
+        JLabel pointLabel = new JLabel();
+        JLabel timeLabel = new JLabel();
         point = new JLabel("10002200");
         time = new JLabel("1000000");
         exit = new JButton("返回");
         restart = new JButton("重试");
 
-        label1.setIcon(new ImageIcon("img/point.png"));
-        label1.setVerticalAlignment(SwingConstants.CENTER);
+        pointLabel.setIcon(new ImageIcon("img/point.png"));
+        pointLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-        label2.setIcon(new ImageIcon("img/point.png"));
-        label2.setVerticalAlignment(SwingConstants.CENTER);
+        timeLabel.setIcon(new ImageIcon("img/point.png"));
+        timeLabel.setVerticalAlignment(SwingConstants.CENTER);
 
         time.setFont(new Font("黑体", Font.BOLD, 50));
         time.setForeground(Color.ORANGE);
@@ -39,8 +39,8 @@ public class OverPanel extends JPanel {
         point.setForeground(Color.ORANGE);
 
         labelPanel1.add(new JPanel());
-        labelPanel1.add(label1);
-        labelPanel1.add(label2);
+        labelPanel1.add(pointLabel);
+        labelPanel1.add(timeLabel);
         labelPanel1.add(new JPanel());
 
         labelPanel2.add(new JPanel());
@@ -80,7 +80,6 @@ public class OverPanel extends JPanel {
 
     public void setPoints(int points) {
         this.point.setText(String.valueOf(points));
-
     }
 
     public void setLastTime(int lastTime) {

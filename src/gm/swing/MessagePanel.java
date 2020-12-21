@@ -10,20 +10,25 @@ import java.util.Timer;
 import javax.swing.event.EventListenerList;
 
 public class MessagePanel extends JPanel {
-    public static final Color myGreen = new Color(93, 191, 8);
-    public static final Color myRed = new Color(243, 68, 68, 255);
+    public static final Color MY_GREEN = new Color(93, 191, 8);
+    public static final Color MY_RED = new Color(243, 68, 68, 255);
 
-    private final JLabel lastTimeLabel;
     private final JLabel sourceLabel;
     private final JLabel title;
     private final JProgressBar timeBar;
     private final EventListenerList timeOutListenerList;
 
-    private final int TIME;
-    private int lastTime;
     private int blockSource;
     private int refreshCounts;
     private int tipCounts;
+
+    //region ...计时器组成部分
+    private final JLabel lastTimeLabel;
+    private final int TIME;
+    private int lastTime;
+    Timer timer;
+    TimerTask task;
+    //endregion
 
     public MessagePanel(int level) {
         int time = getTimeLimit(level);
@@ -32,6 +37,8 @@ public class MessagePanel extends JPanel {
         this.lastTime = time;
         this.blockSource = 0;
         this.setLayout(new BorderLayout(20, 10));
+
+        timer = new Timer();
 
         JPanel barPanel = new JPanel(new BorderLayout(30, 1));
         timeBar = new JProgressBar(0, time);
@@ -50,7 +57,7 @@ public class MessagePanel extends JPanel {
         title.setFont(new Font("楷体", Font.BOLD, 40));
 
         timeBar.setValue(time);
-        timeBar.setForeground(MessagePanel.myGreen);
+        timeBar.setForeground(MessagePanel.MY_GREEN);
         timeBar.setBackground(Color.gray);
         timeBar.setStringPainted(false);
 
@@ -65,27 +72,47 @@ public class MessagePanel extends JPanel {
         barPanel.add(BorderLayout.EAST, sourceLabel);
     }
 
+    /**
+     * 开始计时，不会重置计时器内容
+     */
     public void startCountDown() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        task = new TimerTask() {
             @Override
             public void run() {
                 timeBar.setValue(lastTime--);
                 if (lastTime == 0) invokeTimeOutListener(new ActionEvent(this, 0, "time out"));
-                if (lastTime < TIME / 4) timeBar.setForeground(MessagePanel.myRed);
-
+                if (lastTime < TIME / 4) timeBar.setForeground(MessagePanel.MY_RED);
                 lastTimeLabel.setText("剩余时间：" + " " + lastTime + "s");
                 sourceLabel.setText("得分: " + getSource());
                 repaint();
             }
-        }, 1, 1000);
+        };
+        timer.schedule(task, 0, 1000);
+    }
+
+    /**
+     * 停止计时，不会重置计时器内容
+     */
+    public void stopCountDown() {
+        task.cancel();
+    }
+
+    /**
+     * 重置计时器并重新开始计时
+     */
+    public void resetCountDown(){
+        stopCountDown();
+        lastTime = TIME;
+        timeBar.setValue(TIME);
+        timeBar.setForeground(MessagePanel.MY_GREEN);
+        startCountDown();
     }
 
     private int getTimeLimit(int level) {
         return switch (level) {
             case GameClient.DIFF -> 120;
             case GameClient.MED -> 90;
-            case GameClient.EASY -> 30;
+            case GameClient.EASY -> 5;
             default -> 0;
         };
     }
@@ -101,9 +128,7 @@ public class MessagePanel extends JPanel {
 
     public void reset() {
         this.blockSource = 0;
-        lastTime = TIME;
-        timeBar.setValue(TIME);
-        timeBar.setForeground(MessagePanel.myGreen);
+        resetCountDown();
     }
 
     public void addBlockSource(int source) {

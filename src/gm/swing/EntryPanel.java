@@ -6,6 +6,7 @@ import javax.swing.event.EventListenerList;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.TileObserver;
 import java.io.IOException;
 
 public class EntryPanel extends JPanel {
@@ -16,14 +17,16 @@ public class EntryPanel extends JPanel {
     private JPanel switchPanel;
     private JPanel levelPanel;
     private JPanel enterPanel;
+    private JPanel titlePanel;
     private final EventListenerList LevelChangeListenerList;
     private final EventListenerList clientExitListenerList;
 
     private Sound touchSound;
 
     public EntryPanel(){
+        this.setLayout(new BorderLayout(250,100));
         try {
-            touchSound = new Sound(GamePanel.TOUCH_SOUND);
+            touchSound = new Sound(Sound.Path.TOUCH_SOUND);
         } catch (IOException | UnsupportedAudioFileException e) {
             e.printStackTrace();
             touchSound = null;
@@ -39,9 +42,26 @@ public class EntryPanel extends JPanel {
         exitBtn = new JButton("退出游戏");
         startBtn = new JButton("开始游戏");
         returnBtn = new JButton("返回");
+        titlePanel = new JPanel(new BorderLayout(30,0));
         levelPanel = new JPanel(new GridLayout(4,1,5,5));
-        enterPanel = new JPanel(new GridLayout(2,1,5,5));
+        enterPanel = new JPanel(new GridLayout(2,1,5,50));
         switchPanel = new JPanel(new CardLayout(10,10));
+
+        Font font1 = new Font("楷体", Font.BOLD, 25);
+
+        startBtn.setFont(font1);
+        startBtn.setFocusPainted(false);
+
+        exitBtn.setFont(font1);
+        exitBtn.setFocusPainted(false);
+
+        returnBtn.setFont(font1);
+        returnBtn.setFocusPainted(false);
+
+        for (JButton button : levelButton) {
+            button.setFocusPainted(false);
+            button.setFont(font1);
+        }
         //endregion
 
         //region ...add action listener
@@ -56,6 +76,7 @@ public class EntryPanel extends JPanel {
         exitBtn.addActionListener(e-> {
             touchSound.play();
             invokeGameExitListener(e);
+            System.exit(0);
         });
         for (JButton button : levelButton) {
             button.addActionListener(e -> {
@@ -70,11 +91,18 @@ public class EntryPanel extends JPanel {
             levelPanel.add(button);
         }
         levelPanel.add(returnBtn);
+        titlePanel.add(BorderLayout.EAST, new JPanel());
+        titlePanel.add(BorderLayout.WEST, new JPanel());
+        titlePanel.add(BorderLayout.CENTER, new JLabel(new ImageIcon("img/title.png")));
         enterPanel.add(startBtn);
         enterPanel.add(exitBtn);
         switchPanel.add(enterPanel, "enter");
         switchPanel.add(levelPanel,"level");
-        this.add(switchPanel);
+        this.add(BorderLayout.CENTER, switchPanel);
+        this.add(BorderLayout.NORTH, titlePanel);
+        this.add(BorderLayout.WEST, new JPanel());
+        this.add(BorderLayout.EAST, new JPanel());
+        this.add(BorderLayout.SOUTH, new JPanel());
         //endregion
 
         switchPanel("entry");
