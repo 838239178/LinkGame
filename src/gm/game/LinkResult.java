@@ -3,18 +3,14 @@ package gm.game;
 import java.awt.*;
 
 public class LinkResult {
-    private LinkType linkType;
-    private Point firstPoint;
-    private Point secondPoint;
-    private Point firstCorner;
-    private Point secondCorner;
+    private Point firstPoint = null;
+    private Point secondPoint = null;
+    private Point firstCorner = null;
+    private Point secondCorner = null;
+    private LinkType linkType = null;
 
-    public LinkType getLinkType() {
-        return linkType;
-    }
-
-    public void setLinkType(LinkType linkType) {
-        this.linkType = linkType;
+    public LinkResult() {
+        linkType = LinkType.NO_LINK;
     }
 
     public Point getFirstPoint() {
@@ -47,5 +43,13 @@ public class LinkResult {
 
     public void setSecondCorner(Point secondCorner) {
         this.secondCorner = secondCorner;
+    }
+
+    public LinkType getLinkType() {
+        return linkType;
+    }
+
+    public void setLinkType(LinkType linkType) {
+        this.linkType = linkType;
     }
 }

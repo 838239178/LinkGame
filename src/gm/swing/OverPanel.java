@@ -21,8 +21,8 @@ public class OverPanel extends JPanel {
         JPanel titlePanel = new JPanel(new GridLayout(1,3,1,1));
         JLabel pointLabel = new JLabel("最终得分：");
         JLabel timeLabel = new JLabel("花费时间：");
-        point = new JLabel("10002200");
-        time = new JLabel("1000000");
+        point = new JLabel("");
+        time = new JLabel("");
         exit = new JButton("返回");
         restart = new JButton("重试");
 

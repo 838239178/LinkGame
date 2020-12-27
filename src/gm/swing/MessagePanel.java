@@ -114,7 +114,7 @@ public class MessagePanel extends JPanel {
         return switch (level) {
             case GameClient.DIFF -> 120;
             case GameClient.MED -> 90;
-            case GameClient.EASY -> 5;
+            case GameClient.EASY -> 40;
             default -> 0;
         };
     }
@@ -135,10 +135,12 @@ public class MessagePanel extends JPanel {
 
     public void addBlockSource(int source) {
         blockSource += source;
+        //test
+        //System.out.println("blockSource=" + blockSource + ", source=" + getSource());
     }
 
     public boolean isFinished() {
-        return blockSource >= LEVEL * 10;
+        return blockSource >= LEVEL * LEVEL / 2;
     }
 
     public void addRefreshCount(int count) {

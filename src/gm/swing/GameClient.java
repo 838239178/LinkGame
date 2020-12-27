@@ -1,7 +1,5 @@
 package gm.swing;
 
-
-import gm.game.Point;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -218,7 +216,7 @@ public class GameClient extends JFrame {
         //region ...reset gap of main panel
         {
             BorderLayout layout = (BorderLayout) mainPanel.getLayout();
-            int vGap = (15 - getGameLevel()) * 5 + 2;
+            int vGap = 15 - getGameLevel();
             double hGap = vGap * (getWidth() * 1.5 / getHeight());
             layout.setHgap((int) hGap);
             layout.setVgap(vGap);

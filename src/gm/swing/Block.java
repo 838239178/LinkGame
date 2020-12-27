@@ -1,7 +1,6 @@
 package gm.swing;
 
 import gm.game.GameMap;
-import gm.game.Point;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
@@ -59,11 +58,13 @@ public class Block extends JComponent {
         id = GameMap.BLANK_BLOCK;
         icon = null;
         isBlank = true;
+        //test
+        System.out.println("block clear");
     }
 
     @Override
     public Point getLocation() {
-        Point res = (Point) super.getLocation();
+        Point res = super.getLocation();
         //取中心点
         return new Point(res.x + getWidth() / 2, res.y + getHeight() / 2);
     }
@@ -74,6 +75,7 @@ public class Block extends JComponent {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+        repaint();
     }
 
     public void setId(int id) {
@@ -82,6 +84,7 @@ public class Block extends JComponent {
 
     public void setIcon(Image img) {
         this.icon = img;
+        repaint();
     }
 
     public int getId() {

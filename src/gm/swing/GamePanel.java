@@ -3,7 +3,6 @@ package gm.swing;
 import gm.game.GameMap;
 import gm.game.LinkResult;
 import gm.game.LinkType;
-import gm.game.Point;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
@@ -56,9 +55,12 @@ public class GamePanel extends JPanel {
     private Sound linkSound;
     private Sound touchSound;
 
+    private final int LEVEL;
+
     public GamePanel(int level) {
         //region ...default initial
-        this.map = new GameMap();
+        this.LEVEL = level;
+        this.map = new GameMap(level);
         try {
             linkSound = new Sound(Sound.Path.LINK_SOUND);
             touchSound = new Sound(Sound.Path.TOUCH_SOUND);
@@ -73,17 +75,18 @@ public class GamePanel extends JPanel {
         this.currentBlock1 = null;
         this.currentBlock2 = null;
         this.drawLine = false;
-        this.setLayout(new GridLayout(level, level, 6, 6));
+        this.setLayout(new GridLayout(level+2, level+2, 1, 1));
         //endregion
 
         //region ...initial blocks
         //TODO 使用迭代器
         //test
-        for (int y = 1; y <= level; y++) {
-            for (int x = 1; x <= level; x++) {
-                int id = map.returnID(new Point(x,y));
+        for (int y = 0; y < level+2; y++) {
+            for (int x = 0; x < level+2; x++) {
+                gm.game.Point p = new gm.game.Point(y,x);
+                int id = map.returnID(p);
                 Block block = BlockFactory.INSTANCE.getBlock(id);
-                block.setPointOnMap(new Point(x, y));
+                block.setPointOnMap(p);
                 blocks.add(block);
             }
         }
@@ -227,7 +230,7 @@ public class GamePanel extends JPanel {
                 cancelSelect();
                 return;
             }
-            LinkResult res = map.isConnex(currentBlock1.getPointOnMap(), currentBlock2.getPointOnMap());
+            LinkResult res = map.isConnex((gm.game.Point)currentBlock1.getPointOnMap(), (gm.game.Point)currentBlock2.getPointOnMap());
             if (res.getLinkType() != LinkType.NO_LINK) {
                 LinkBlocks(res);
             } else {
@@ -242,7 +245,7 @@ public class GamePanel extends JPanel {
      * @param link 连接的结果
      */
     private void LinkBlocks(LinkResult link) {
-        map.remove(currentBlock1.getPointOnMap(), currentBlock2.getPointOnMap());
+        map.remove((gm.game.Point)currentBlock1.getPointOnMap(), (gm.game.Point)currentBlock2.getPointOnMap());
         startDrawLines(link, 500);
         invokeLinkBlockListener(new ActionEvent(this, 0, "link blocks"));
     }
@@ -278,16 +281,14 @@ public class GamePanel extends JPanel {
      */
     private void updateBlocks() {
         //TODO 尝试使用迭代器
-
         //region test
         for (Block block : blocks) {
-            int idOnMap = map.returnID(block.getPointOnMap());
+            int idOnMap = map.returnID((gm.game.Point) block.getPointOnMap());
             if (block.getId() != idOnMap) {
                 BlockFactory.INSTANCE.resetBlock(block, idOnMap);
             }
         }
         //endregion
-
         repaint();
     }
 
@@ -321,6 +322,7 @@ public class GamePanel extends JPanel {
                 }
             }, 500);
         } catch (NullPointerException e) {
+            System.out.println("tip failed, link result has null point");
             e.printStackTrace();
         }
     }
@@ -330,14 +332,18 @@ public class GamePanel extends JPanel {
      */
     public void tipBlock() {
         LinkResult res = map.autoConnex();
-        tip(res);
+        if(res.getLinkType() != LinkType.NO_LINK) {
+            tip(res);
+        } else {
+            System.out.println("tip: no link");
+        }
     }
 
     /**
      * 重新生成游戏
      */
     public void reset() {
-        this.map = new GameMap();
+        this.map = new GameMap(LEVEL);
         cancelSelect();
         updateBlocks();
     }
