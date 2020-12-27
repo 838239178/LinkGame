@@ -1,6 +1,7 @@
 package gm.swing;
 
 import gm.game.GameMap;
+import gm.game.Point;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
@@ -62,7 +63,7 @@ public class Block extends JComponent {
 
     @Override
     public Point getLocation() {
-        Point res = super.getLocation();
+        Point res = (Point) super.getLocation();
         //取中心点
         return new Point(res.x + getWidth() / 2, res.y + getHeight() / 2);
     }

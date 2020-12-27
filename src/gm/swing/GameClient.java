@@ -1,5 +1,7 @@
 package gm.swing;
 
+
+import gm.game.Point;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -148,7 +150,7 @@ public class GameClient extends JFrame {
         this.pack();
         this.setSize(default_width, default_height);
         this.setResizable(false);
-        Point location = this.getLocation();
+        Point location = (Point) this.getLocation();
         this.setLocation(location.x - getWidth() / 2, location.y - getHeight() / 2);
         //endregion
 

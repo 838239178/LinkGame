@@ -3,6 +3,7 @@ package gm.swing;
 import gm.game.GameMap;
 import gm.game.LinkResult;
 import gm.game.LinkType;
+import gm.game.Point;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
@@ -80,7 +81,7 @@ public class GamePanel extends JPanel {
         //test
         for (int y = 1; y <= level; y++) {
             for (int x = 1; x <= level; x++) {
-                int id = map.getId(y, x);
+                int id = map.returnID(new Point(x,y));
                 Block block = BlockFactory.INSTANCE.getBlock(id);
                 block.setPointOnMap(new Point(x, y));
                 blocks.add(block);
@@ -226,7 +227,7 @@ public class GamePanel extends JPanel {
                 cancelSelect();
                 return;
             }
-            LinkResult res = map.isLink(currentBlock1.getPointOnMap(), currentBlock2.getPointOnMap());
+            LinkResult res = map.isConnex(currentBlock1.getPointOnMap(), currentBlock2.getPointOnMap());
             if (res.getLinkType() != LinkType.NO_LINK) {
                 LinkBlocks(res);
             } else {
@@ -280,7 +281,7 @@ public class GamePanel extends JPanel {
 
         //region test
         for (Block block : blocks) {
-            int idOnMap = map.getId(block.getPointOnMap().y, block.getPointOnMap().x);
+            int idOnMap = map.returnID(block.getPointOnMap());
             if (block.getId() != idOnMap) {
                 BlockFactory.INSTANCE.resetBlock(block, idOnMap);
             }
@@ -294,7 +295,7 @@ public class GamePanel extends JPanel {
      * 重新随机方块位置
      */
     public void refreshBlocks() {
-        map.refresh();
+        map.changeMap();
         updateBlocks();
     }
 
@@ -328,7 +329,7 @@ public class GamePanel extends JPanel {
      * 提示两个可消除方块
      */
     public void tipBlock() {
-        LinkResult res = map.findLinkedPoint();
+        LinkResult res = map.autoConnex();
         tip(res);
     }
 
