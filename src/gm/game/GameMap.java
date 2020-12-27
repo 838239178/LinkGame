@@ -1,70 +1,77 @@
+package gm.game;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class GameMap implements GameRules{
+    public static final int BLANK_BLOCK = 0;
+
     private int mapSize;
     protected Point firstConner;
     protected Point secondConner;
     protected int kkk = 1;
-    int[][] map = new int[mapSize + 2][mapSize + 2];
+    private int[][] map;
 
 
     public GameMap(int mapSize) {
         this.mapSize = mapSize;
+        map = new int[mapSize+2][mapSize+2];
+        initMap();
     }
 
-    public int getMapSize() {
-        return mapSize;
-    }
-
-    public void setMapSize(int mapSize) {
-        this.mapSize = mapSize;
-    }
+//    public int getMapSize() {
+//        return mapSize;
+//    }
+//
+//    public void setMapSize(int mapSize) {
+//        this.mapSize = mapSize;
+//    }
 
     //判断是否连通的方法，并记录所以拐点，返回LinkResult
-    public LinkRuselt isConnex(int[][] map, Point firstPoint, Point secondPoint) {
-        LinkRuselt linkRuselt = new LinkRuselt();
-        if(isStraightLink(map, firstPoint, secondPoint)) {
-            linkRuselt.setFirstPoint(firstPoint);
-            linkRuselt.setSecondPoint(secondPoint);
-            linkRuselt.setLinkType(LinkType.STRAIGHT_LINK);
-            return linkRuselt;
+    public LinkResult isConnex(Point firstPoint, Point secondPoint) {
+        LinkResult linkResult = new LinkResult();
+        linkResult.setLinkType(LinkType.NO_LINK);
+        if(isStraightLink(firstPoint, secondPoint)) {
+            linkResult.setFirstPoint(firstPoint);
+            linkResult.setSecondPoint(secondPoint);
+            linkResult.setLinkType(LinkType.STRAIGHT_LINK);
+            return linkResult;
         }
-        if(isSingleConner(map, firstPoint, secondPoint)) {
-            linkRuselt.setFirstPoint(firstPoint);
-            linkRuselt.setSecondPoint(secondPoint);
-            linkRuselt.setFirstCorner(firstConner);
-            linkRuselt.setLinkType(LinkType.SINGLECORNER_LINK);
-            return linkRuselt;
+        if(isSingleConner(firstPoint, secondPoint)) {
+            linkResult.setFirstPoint(firstPoint);
+            linkResult.setSecondPoint(secondPoint);
+            linkResult.setFirstCorner(firstConner);
+            linkResult.setLinkType(LinkType.SINGLE_CORNER_LINK);
+            return linkResult;
         }
-        if(isDoubleConner(map, firstPoint, secondPoint)) {
-            linkRuselt.setFirstPoint(firstPoint);
-            linkRuselt.setSecondPoint(secondPoint);
-            linkRuselt.setFirstCorner(firstConner);
-            linkRuselt.setSecondCorner(secondConner);
-            linkRuselt.setLinkType(LinkType.DOUBLECORNER_LINK);
-            return linkRuselt;
+        if(isDoubleConner(firstPoint, secondPoint)) {
+            linkResult.setFirstPoint(firstPoint);
+            linkResult.setSecondPoint(secondPoint);
+            linkResult.setFirstCorner(firstConner);
+            linkResult.setSecondCorner(secondConner);
+            linkResult.setLinkType(LinkType.DOUBLE_CORNER_LINK);
+            return linkResult;
         }
-        return linkRuselt;
+        return linkResult;
     }
 
     //获取地图数据（二维数组中的值），返回方块ID
-    public int returnID(int[][] map, Point point){
+    public int returnID(Point point){
         return map[point.getx()][point.gety()];
     }
 
     //清空指定两个点的方法
-    public void remove(int[][] map, Point firstPoint, Point secondPoint) {
-        LinkRuselt linkRuselt = isConnex(map, firstPoint, secondPoint);
-        if(linkRuselt.getLinkType() != LinkType.NO_LINK) {
+    public void remove(Point firstPoint, Point secondPoint) {
+        LinkResult linkResult = isConnex(firstPoint, secondPoint);
+        if(linkResult.getLinkType() != LinkType.NO_LINK) {
             map[firstPoint.getx()][firstPoint.gety()] = 0;
             map[secondPoint.getx()][secondPoint.gety()] = 0;
         }
     }
 
     //重新随机地图的方法
-    public void changeMap(int[][] map){
+    public void changeMap(){
         List list = new ArrayList();
         int k = 0;
         //循环找到所有不为0的点，并把它们放入list中
@@ -89,10 +96,10 @@ public class GameMap implements GameRules{
     }
 
     //自动寻找两个可相消的点。成功返回LinkResult，失败抛出RuntimeException
-    public LinkRuselt autoConnex(int[][] map){
+    public LinkResult autoConnex(){
         int n = 1;
         kkk--;
-        LinkRuselt linkRuselt = new LinkRuselt();
+        LinkResult linkResult = new LinkResult();
         while(n <= kkk) {
             int k = 1;
             int i1 = 0;
@@ -118,9 +125,9 @@ public class GameMap implements GameRules{
                     if (map[i][j] == n) {
                         secondPoint.setX(i);
                         secondPoint.setY(j);
-                        linkRuselt = isConnex(map, firstPoint, secondPoint);
+                        linkResult = isConnex(firstPoint, secondPoint);
                         //若连通返回linkRuselt
-                        if(linkRuselt.getLinkType() != LinkType.NO_LINK) return linkRuselt;
+                        if(linkResult.getLinkType() != LinkType.NO_LINK) return linkResult;
                         continue;
                     }
                 }
@@ -129,11 +136,11 @@ public class GameMap implements GameRules{
             n++;
         }
         //找不到也返回linkRuselt
-        return linkRuselt;
+        return linkResult;
     }
 
     //判断是否直接连通,用于isConnex
-    public boolean isStraightLink(int[][] map, Point firstPoint, Point secondPoint) {
+    public boolean isStraightLink(Point firstPoint, Point secondPoint) {
         //两个点id不相同，直接返回false
         if(map[firstPoint.getx()][firstPoint.gety()] != map[secondPoint.getx()][secondPoint.gety()] && map[firstPoint.getx()][firstPoint.gety()] != 0 && map[secondPoint.getx()][secondPoint.gety()] != 0) return false;
         //当两个点在同一行的时候，就去判断列这一路是否连通
@@ -180,7 +187,7 @@ public class GameMap implements GameRules{
         return false;
     }
 
-    public boolean isSingleConner(int[][] map, Point firstPoint, Point secondPoint) {
+    public boolean isSingleConner(Point firstPoint, Point secondPoint) {
         //如果是单拐点连通的话，两个可能的拐点一定与这两个点同行或者同列
         Point mayConner1 = new Point();
         Point mayConner2 = new Point();
@@ -193,15 +200,15 @@ public class GameMap implements GameRules{
         //如果两个拐点均不为0，则不可能单拐点连通，返回false
         if(map[mayConner1.getx()][mayConner1.gety()] !=0 && map[mayConner2.getx()][mayConner2.gety()] != 0) return false;
         //判断可能的拐点1是否与两个点都连通
-        if(isStraightLink(map, firstPoint, mayConner1)) {
-            if(isStraightLink(map, secondPoint, mayConner1)) {
+        if(isStraightLink(firstPoint, mayConner1)) {
+            if(isStraightLink(secondPoint, mayConner1)) {
                 firstConner = mayConner1;
                 return true;
             }
         }
         //判断可能的拐点2是否与两个点都连通
-        if(isStraightLink(map, firstPoint, mayConner2)) {
-            if(isStraightLink(map, secondPoint, mayConner2)) {
+        if(isStraightLink(firstPoint, mayConner2)) {
+            if(isStraightLink(secondPoint, mayConner2)) {
                 firstConner = mayConner2;
                 return true;
             }
@@ -210,7 +217,7 @@ public class GameMap implements GameRules{
         return false;
     }
 
-    public boolean isDoubleConner(int[][] map, Point firstPoint, Point secondPoint) {
+    public boolean isDoubleConner(Point firstPoint, Point secondPoint) {
         //两个点id不相同，直接返回false
         if(map[firstPoint.getx()][firstPoint.gety()] != map[secondPoint.getx()][secondPoint.gety()] && map[firstPoint.getx()][firstPoint.gety()] != 0 && map[secondPoint.getx()][secondPoint.gety()] != 0) return false;
         //循环找与第一个点在同一行的点中是否有某个点，它分别与第一个点直接连通又与第二个点单拐点连通，有返回true
@@ -218,7 +225,7 @@ public class GameMap implements GameRules{
             Point mayConner = new Point();
             mayConner.setX(firstPoint.getx());
             mayConner.setY(i);
-            if(map[mayConner.getx()][mayConner.gety()] == 0 && isStraightLink(map, mayConner, firstPoint) && isSingleConner(map, mayConner, secondPoint)) {
+            if(map[mayConner.getx()][mayConner.gety()] == 0 && isStraightLink(mayConner, firstPoint) && isSingleConner(mayConner, secondPoint)) {
                 //此时第二个拐点被第一个拐点所记录
                 secondConner = firstConner;
                 //再更新第一个拐点为真正的第一个拐点
@@ -231,7 +238,7 @@ public class GameMap implements GameRules{
             Point mayConner = new Point();
             mayConner.setX(i);
             mayConner.setY(firstPoint.gety());
-            if(map[mayConner.getx()][mayConner.gety()] == 0 && isStraightLink(map, mayConner, firstPoint) && isSingleConner(map, mayConner, secondPoint)) {
+            if(map[mayConner.getx()][mayConner.gety()] == 0 && isStraightLink(mayConner, firstPoint) && isSingleConner(mayConner, secondPoint)) {
                 //此时第二个拐点被第一个拐点所记录
                 secondConner = firstConner;
                 //再更新第一个拐点为真正的第一个拐点
