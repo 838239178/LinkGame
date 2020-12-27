@@ -7,7 +7,6 @@ public enum BlockFactory {
     INSTANCE;
 
     public Block getBlock(int id){
-        //test
         Image img = new ImageIcon("img//b"+id+".png").getImage();
         return new Block(id, img);
     }

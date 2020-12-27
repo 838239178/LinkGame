@@ -6,7 +6,6 @@ import javax.swing.event.EventListenerList;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.TileObserver;
 import java.io.IOException;
 
 public class EntryPanel extends JPanel {
@@ -75,7 +74,7 @@ public class EntryPanel extends JPanel {
         });
         exitBtn.addActionListener(e-> {
             touchSound.play();
-            invokeGameExitListener(e);
+            invokeClientExitListener(e);
             System.exit(0);
         });
         for (JButton button : levelButton) {
@@ -120,12 +119,12 @@ public class EntryPanel extends JPanel {
                 case "中等" -> GameClient.MED;
                 default -> 0;
             };
-            listener.actionPerformed(new ActionEvent(this, level, e.getActionCommand()));
+            listener.actionPerformed(new ActionEvent(e.getSource(), level, e.getActionCommand()));
         }
         switchPanel("enter");
     }
 
-    private void invokeGameExitListener(ActionEvent e){
+    private void invokeClientExitListener(ActionEvent e){
         for (ActionListener listener : clientExitListenerList.getListeners(ActionListener.class)) {
             listener.actionPerformed(e);
         }

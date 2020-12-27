@@ -11,13 +11,14 @@ import javax.swing.event.EventListenerList;
 
 public class MessagePanel extends JPanel {
     public static final Color MY_GREEN = new Color(93, 191, 8);
-    public static final Color MY_RED = new Color(243, 68, 68, 255);
+    public static final Color MY_RED = new Color(243, 68, 68);
 
     private final JLabel sourceLabel;
     private final JLabel title;
     private final JProgressBar timeBar;
     private final EventListenerList timeOutListenerList;
 
+    private final int LEVEL;
     private int blockSource;
     private int refreshCounts;
     private int tipCounts;
@@ -31,6 +32,7 @@ public class MessagePanel extends JPanel {
     //endregion
 
     public MessagePanel(int level) {
+        this.LEVEL = level;
         int time = getTimeLimit(level);
         this.timeOutListenerList = new EventListenerList();
         this.TIME = time;
@@ -100,7 +102,7 @@ public class MessagePanel extends JPanel {
     /**
      * 重置计时器并重新开始计时
      */
-    public void resetCountDown(){
+    public void resetCountDown() {
         stopCountDown();
         lastTime = TIME;
         timeBar.setValue(TIME);
@@ -135,11 +137,15 @@ public class MessagePanel extends JPanel {
         blockSource += source;
     }
 
+    public boolean isFinished() {
+        return blockSource >= LEVEL * 10;
+    }
+
     public void addRefreshCount(int count) {
         refreshCounts += count;
     }
 
-    public void addTipCount(int count){
+    public void addTipCount(int count) {
         tipCounts += count;
     }
 

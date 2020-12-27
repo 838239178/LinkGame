@@ -19,23 +19,27 @@ public class OverPanel extends JPanel {
         JPanel labelPanel2 = new JPanel(new GridLayout(4,1,5,20));
         JPanel buttonPanel = new JPanel(new GridLayout(1,5,20,20));
         JPanel titlePanel = new JPanel(new GridLayout(1,3,1,1));
-        JLabel pointLabel = new JLabel();
-        JLabel timeLabel = new JLabel();
+        JLabel pointLabel = new JLabel("最终得分：");
+        JLabel timeLabel = new JLabel("花费时间：");
         point = new JLabel("10002200");
         time = new JLabel("1000000");
         exit = new JButton("返回");
         restart = new JButton("重试");
 
-        pointLabel.setIcon(new ImageIcon("img/point.png"));
+        Font font = new Font("黑体", Font.BOLD, 50);
+
+        pointLabel.setFont(font);
+        pointLabel.setForeground(Color.WHITE);
         pointLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-        timeLabel.setIcon(new ImageIcon("img/point.png"));
+        timeLabel.setFont(font);
+        timeLabel.setForeground(Color.WHITE);
         timeLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-        time.setFont(new Font("黑体", Font.BOLD, 50));
+        time.setFont(font);
         time.setForeground(Color.ORANGE);
 
-        point.setFont(new Font("黑体", Font.BOLD, 50));
+        point.setFont(font);
         point.setForeground(Color.ORANGE);
 
         labelPanel1.add(new JPanel());

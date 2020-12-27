@@ -7,11 +7,13 @@ import it.sauronsoftware.jave.MultimediaInfo;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * 部分使用了根目录下‘java-1.0.2.jar’内的代码
  *
- * @author http://www.java2s.com/Code/Jar/j/Downloadjave102jar.htm
+ * 'java-1.0.2.jar' 原下载地址 : http://www.java2s.com/Code/Jar/j/Downloadjave102jar.htm
  */
 public class Sound {
     public static class Path {
@@ -24,8 +26,12 @@ public class Sound {
     private AudioFormat format;
     private byte[] data;
     private long duration;
+    private boolean isPlay;
+
 
     public Sound(String name) throws IOException, UnsupportedAudioFileException {
+        isPlay = false;
+
         File source = new File(name);
         //region ...java-1.0.2.jar
         Encoder encoder = new Encoder();
@@ -56,6 +62,8 @@ public class Sound {
     }
 
     public void play() {
+        if(isPlay) return;
+        isPlay = true;
         new Thread(() -> {
             try {
                 dataLine.open(format, data.length*2);
@@ -68,6 +76,17 @@ public class Sound {
             } finally {
                 dataLine.close();
             }
+
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    isPlay = false;
+                }
+            },0);
         }).start();
+    }
+
+    public boolean isPlay() {
+        return isPlay;
     }
 }

@@ -31,6 +31,8 @@ public class GameClient extends JFrame {
     private int gameLevel;
     private String sceneName;
 
+    private Sound bgm;
+
     public GameClient() {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
@@ -83,6 +85,9 @@ public class GameClient extends JFrame {
             resizeMenu.add("x2").addActionListener(e -> scaleSize(2));
             resizeMenu.add("x3").addActionListener(e -> scaleSize(3));
 
+            settingMenu.add("on/off bgm").addActionListener(e->{
+
+            });
             settingMenu.add(resizeMenu);
             settingMenu.add("about").addActionListener(e -> aboutDialog.setVisible(true));
 
@@ -162,7 +167,7 @@ public class GameClient extends JFrame {
 
         //循环播放背景音乐
         try {
-            Sound bgm = new Sound(Sound.Path.BGM);
+            bgm = new Sound(Sound.Path.BGM);
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -203,8 +208,9 @@ public class GameClient extends JFrame {
     }
 
     /**
-     * 程序开始入口，只由 entry panel 调用
+     * 游戏开始入口，只由 entry panel 调用
      * 初始化 game panel 和 message panel
+     *
      */
     private void gameStart() {
         //region ...reset gap of main panel
@@ -220,7 +226,12 @@ public class GameClient extends JFrame {
         messagePanel = new MessagePanel(getGameLevel());
         gamePanel = new GamePanel(getGameLevel());
 
-        gamePanel.addLinkBlockListener(e -> messagePanel.addBlockSource(1));
+        gamePanel.addLinkBlockListener(e -> {
+            messagePanel.addBlockSource(1);
+            if(messagePanel.isFinished()){
+                gameOver();
+            }
+        });
         messagePanel.addTimeOutListener(e -> gameOver());
 
         mainPanel.add(BorderLayout.NORTH, messagePanel);
@@ -246,14 +257,24 @@ public class GameClient extends JFrame {
         messagePanel.startCountDown();
     }
 
+    /**
+     * 点击了菜单栏上的退出或结算页面的退出时
+     *
+     */
     private void gameExit() {
-        mainPanel.remove(gamePanel);
-        mainPanel.remove(messagePanel);
-        gamePanel = null;
-        messagePanel = null;
-        switchPanel("entry");
+        if(!sceneName.equals("entry")) {
+            mainPanel.remove(gamePanel);
+            mainPanel.remove(messagePanel);
+            gamePanel = null;
+            messagePanel = null;
+            switchPanel("entry");
+        }
     }
 
+    /**
+     * 倒计时结束或者消除所有方块时
+     *
+     */
     private void gameOver() {
         if(sceneName.equals("play")) {
             overPanel.setLastTime(messagePanel.getLastTime());
