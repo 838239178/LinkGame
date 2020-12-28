@@ -3,6 +3,7 @@ package gm.swing;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -281,7 +282,13 @@ public class GameClient extends JFrame {
             overPanel.setSpendTime(messagePanel.getSpendTime());
             overPanel.setWin(messagePanel.getLastTime()>0);
             overPanel.setPoints(messagePanel.getSource());
-            switchPanel("over");
+            //等待最后的动画播放完整
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    switchPanel("over");
+                }
+            },200);
         }
     }
 

@@ -55,12 +55,21 @@ public class GamePanel extends JPanel {
     private Sound linkSound;
     private Sound touchSound;
 
+    /**
+     * 游戏难度系数
+     */
     private final int LEVEL;
+
+    /**
+     * GamePanel中的定时器
+     */
+    private final Timer timer;
 
     public GamePanel(int level) {
         //region ...default initial
         this.LEVEL = level;
         this.map = new GameMap(level);
+        this.timer = new Timer();
         try {
             linkSound = new Sound(Sound.Path.LINK_SOUND);
             touchSound = new Sound(Sound.Path.TOUCH_SOUND);
@@ -204,7 +213,7 @@ public class GamePanel extends JPanel {
             repaint();
 
             //一段时间后清除方块和线段
-            new Timer().schedule(new TimerTask() {
+            timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     drawLine = false;
@@ -239,7 +248,7 @@ public class GamePanel extends JPanel {
             if (res.getLinkType() != LinkType.NO_LINK) {
                 LinkBlocks(res);
             } else {
-                cancelSelect();
+                cancelSelect(150);
             }
         }
     }
@@ -275,6 +284,9 @@ public class GamePanel extends JPanel {
         return currentBlock1 != null && currentBlock2 != null && currentBlock1 != currentBlock2;
     }
 
+    /**
+     * 立即取消选取并清除引用
+     */
     private void cancelSelect() {
         if (currentBlock1 != null) currentBlock1.setSelected(false);
         if (currentBlock2 != null) currentBlock2.setSelected(false);
@@ -282,18 +294,33 @@ public class GamePanel extends JPanel {
     }
 
     /**
+     * 立即清除引用，但过一段时间再取消选取
+     * @param delay 等待的时间（ms)
+     */
+    private void cancelSelect(int delay) {
+        final Block temp1 = currentBlock1;
+        final Block temp2 = currentBlock2;
+        currentBlock2 = currentBlock1 = null;
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(temp1 != null) temp1.setSelected(false);
+                if(temp2 != null) temp2.setSelected(false);
+            }
+        },delay);
+    }
+
+
+    /**
      * 更新方块，方块分布发生变化时使用
      */
     private void updateBlocks() {
-        //TODO 尝试使用迭代器
-        //region test
         for (Block block : blocks) {
             int idOnMap = map.returnID((gm.game.Point) block.getPointOnMap());
             if (block.getId() != idOnMap) {
                 BlockFactory.INSTANCE.resetBlock(block, idOnMap);
             }
         }
-        //endregion
         repaint();
     }
 
@@ -319,7 +346,7 @@ public class GamePanel extends JPanel {
             block2.setSelected(true);
 
             //提示一段时间后消除提示
-            new Timer().schedule(new TimerTask() {
+            timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     block1.setSelected(false);
