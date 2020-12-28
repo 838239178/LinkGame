@@ -1,16 +1,25 @@
 @author 施嘉宏
 
 1. 2020.12.27 得分不发生变化，一直为0
+reason: 分数计算有问题，导致计算结果恒为零
+solution：
+
+2. 2020.12.27 边界处，双拐点连通情况无法正确消除方块
+reason: 未在GamePanel中预留一圈空白方块，导致拐点找不到。
+solution：在GamePanel构造函数初始化Block时，增加一圈空白方块。
+
+3. 2020.12.27 倒计时结束后点击重试或者点击菜单栏重试，方块数量只有上一轮剩下的。
+reason: block重置时，isBlank标记位未更改！！！！
+solution：将isBlank作为方法，用id直接判断。
+
+4. 2020.12.27 方块全部消除后，游戏未进入结算界面
 reason: 游戏得分结束的标志是：消除一次 block source +1，总共 level^2 / 2, 判断条件错误
-solution： MessagePanel.isFinished() 判断条件由 >=level*level --> >=level*level / 2
+solution：MessagePanel.isFinished() 判断条件由 >=level*level --> >=level*level / 2
 
-2. 2020.12.27 倒计时结束后点击重试或者点击菜单栏重试，方块数量只有上一轮剩下的。
+5. 2020.12.27 完全消除方块完成后，结算界面点击返回，再次开始时直接结束
 reason:
 solution：
 
-3. 2020.12.27 方块全部消除后，游戏未进入结算界面
+6. 2020.12.27 提示第二次以后出现NullPointException
 reason:
-solution：
-
-4. 2020.12.27 完全消除方块完成后，结算界面点击返回，再次开始时直接结束
-solution：
+solution:

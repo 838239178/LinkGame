@@ -76,13 +76,17 @@ public class MessagePanel extends JPanel {
 
     /**
      * 开始计时，不会重置计时器内容
+     * 倒计时结束后清除计时器
      */
     public void startCountDown() {
         task = new TimerTask() {
             @Override
             public void run() {
                 timeBar.setValue(lastTime--);
-                if (lastTime == 0) invokeTimeOutListener(new ActionEvent(this, 0, "time out"));
+                if (lastTime == 0) {
+                    invokeTimeOutListener(new ActionEvent(this, 0, "time out"));
+                    this.cancel();
+                }
                 if (lastTime < TIME / 4) timeBar.setForeground(MessagePanel.MY_RED);
                 lastTimeLabel.setText("剩余时间：" + " " + lastTime + "s");
                 sourceLabel.setText("得分: " + getSource());
@@ -124,8 +128,9 @@ public class MessagePanel extends JPanel {
     }
 
     public int getSource() {
-        //消去方块分最多为(n*10)分，在此基础上除以(消耗时间*重置次数*提示次数*0.1)。
-        return (int) (blockSource * 10 / (TIME - lastTime) * refreshCounts * tipCounts * 0.1);
+        //消去方块分最多为(n*10)分，在此基础上除以(消耗时间*重置次数+1*提示次数+1*0.1)。
+        return (int) (blockSource * 10 / ((TIME - lastTime) * (refreshCounts+1) * (tipCounts+1) * 0.1));
+        //return  blockSource*10;
     }
 
     public void reset() {

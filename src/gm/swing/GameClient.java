@@ -258,11 +258,12 @@ public class GameClient extends JFrame {
     }
 
     /**
-     * 点击了菜单栏上的退出或结算页面的退出时
+     * 点击了菜单栏上的退出或结算页面的返回时
      *
      */
     private void gameExit() {
         if(!sceneName.equals("entry")) {
+            messagePanel.stopCountDown();
             mainPanel.remove(gamePanel);
             mainPanel.remove(messagePanel);
             gamePanel = null;
