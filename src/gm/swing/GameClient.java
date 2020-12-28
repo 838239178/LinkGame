@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -149,7 +150,7 @@ public class GameClient extends JFrame {
         this.pack();
         this.setSize(default_width, default_height);
         this.setResizable(false);
-        Point location = (Point) this.getLocation();
+        Point location = this.getLocation();
         this.setLocation(location.x - getWidth() / 2, location.y - getHeight() / 2);
         //endregion
 

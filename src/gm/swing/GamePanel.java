@@ -1,6 +1,7 @@
 package gm.swing;
 
 import gm.game.GameMap;
+import gm.game.GameMapItr;
 import gm.game.LinkResult;
 import gm.game.LinkType;
 
@@ -13,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -89,16 +91,24 @@ public class GamePanel extends JPanel {
 
         //region ...initial blocks
         //TODO 使用迭代器
-        //test
-        for (int y = 0; y < level+2; y++) {
-            for (int x = 0; x < level+2; x++) {
-                gm.game.Point p = new gm.game.Point(y,x);
-                int id = map.returnID(p);
-                Block block = BlockFactory.INSTANCE.getBlock(id);
-                block.setPointOnMap(p);
-                blocks.add(block);
-            }
+        GameMapItr it = map.Iterator();
+        while (it.hasNext()){
+            int id = it.next();
+            gm.game.Point p = it.lastIndex();
+            Block block = BlockFactory.INSTANCE.getBlock(id);
+            block.setPointOnMap(p);
+            blocks.add(block);
         }
+        //test
+//        for (int y = 0; y < level+2; y++) {
+//            for (int x = 0; x < level+2; x++) {
+//                gm.game.Point p = new gm.game.Point(y,x);
+//                int id = map.returnID(p);
+//                Block block = BlockFactory.INSTANCE.getBlock(id);
+//                block.setPointOnMap(p);
+//                blocks.add(block);
+//            }
+//        }
 
         for (Block b : blocks) {
             b.addBlockClickedListener(e -> {
