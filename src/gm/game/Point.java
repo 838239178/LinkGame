@@ -1,15 +1,13 @@
+package gm.game;
+
 public class Point extends java.awt.Point {
-//    private int x = -1;
-//    private int y = -1;
-//
-//    public Point() {
-//        java.awt.Point
-//    }
-//
-//    public Point(int x, int y) {
-//        this.x = x;
-//        this.y = y;
-//    }
+
+    public Point(int x, int y) {
+        super(x, y);
+    }
+
+    public Point() {
+    }
 
     public int getx() {
         return (int)getX();
