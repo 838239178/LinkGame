@@ -93,7 +93,13 @@ public class GamePanel extends JPanel {
 
         for (Block b : blocks) {
             b.addBlockClickedListener(e -> {
+                touchSound.play();
                 Block current = (Block) e.getSource();
+                //如果正在画线，阻止任何响应
+                if(drawLine) {
+                    current.setSelected(false);
+                    return;
+                }
 
                 //如果是反选，消除引用
                 if (!current.isSelected()) {
@@ -105,6 +111,7 @@ public class GamePanel extends JPanel {
                     return;
                 }
 
+
                 if (currentBlock1 == null) currentBlock1 = current;
                 else if (currentBlock2 == null) currentBlock2 = current;
                 else {
@@ -115,8 +122,6 @@ public class GamePanel extends JPanel {
                 if (isSelectedDoubleBlock()) {
                     tryLinkBlocks();
                 }
-
-                touchSound.play();
             });
             this.add(b);
         }
@@ -246,7 +251,7 @@ public class GamePanel extends JPanel {
      */
     private void LinkBlocks(LinkResult link) {
         map.remove((gm.game.Point)currentBlock1.getPointOnMap(), (gm.game.Point)currentBlock2.getPointOnMap());
-        startDrawLines(link, 500);
+        startDrawLines(link, 400);
         invokeLinkBlockListener(new ActionEvent(this, 0, "link blocks"));
     }
 

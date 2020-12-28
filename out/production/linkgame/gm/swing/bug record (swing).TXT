@@ -17,9 +17,9 @@ reason: 游戏得分结束的标志是：消除一次 block source +1，总共 l
 solution：MessagePanel.isFinished() 判断条件由 >=level*level --> >=level*level / 2
 
 5. 2020.12.27 完全消除方块完成后，结算界面点击返回，再次开始时直接结束
-reason:
-solution：
+reason: 游戏结束时没有停止MessagePanel的计时器，导致下一轮计时结束后直接触发失败
+solution：GameClient.gameOver时调用MessagePanel.stopCountdown停止计时器
 
 6. 2020.12.27 提示第二次以后出现NullPointException
-reason:
-solution:
+reason: GameMap.autoConnex出错
+solution: 交给Xu处理

@@ -278,7 +278,8 @@ public class GameClient extends JFrame {
      */
     private void gameOver() {
         if(sceneName.equals("play")) {
-            overPanel.setLastTime(messagePanel.getLastTime());
+            overPanel.setSpendTime(messagePanel.getSpendTime());
+            overPanel.setWin(messagePanel.getLastTime()>0);
             overPanel.setPoints(messagePanel.getSource());
             switchPanel("over");
         }

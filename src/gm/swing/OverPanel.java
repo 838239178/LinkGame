@@ -91,9 +91,12 @@ public class OverPanel extends JPanel {
         this.point.setText(String.valueOf(points));
     }
 
-    public void setLastTime(int lastTime) {
-        this.time.setText(lastTime + " S");
-        if(lastTime>0){
+    public void setSpendTime(int spendTime) {
+        this.time.setText(spendTime + " S");
+    }
+
+    public void setWin(boolean isWin){
+        if(isWin){
             resultLabel.setText("成功");
             resultLabel.setForeground(MessagePanel.MY_GREEN);
         } else {

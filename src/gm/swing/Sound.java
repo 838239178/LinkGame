@@ -26,12 +26,9 @@ public class Sound {
     private AudioFormat format;
     private byte[] data;
     private long duration;
-    private boolean isPlay;
 
 
     public Sound(String name) throws IOException, UnsupportedAudioFileException {
-        isPlay = false;
-
         File source = new File(name);
         //region ...java-1.0.2.jar
         Encoder encoder = new Encoder();
@@ -62,8 +59,6 @@ public class Sound {
     }
 
     public void play() {
-        if(isPlay) return;
-        isPlay = true;
         new Thread(() -> {
             try {
                 dataLine.open(format, data.length*2);
@@ -76,17 +71,6 @@ public class Sound {
             } finally {
                 dataLine.close();
             }
-
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    isPlay = false;
-                }
-            },0);
         }).start();
-    }
-
-    public boolean isPlay() {
-        return isPlay;
     }
 }

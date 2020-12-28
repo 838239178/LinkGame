@@ -127,6 +127,10 @@ public class MessagePanel extends JPanel {
         return lastTime;
     }
 
+    public int getSpendTime(){
+        return TIME-getLastTime();
+    }
+
     public int getSource() {
         //消去方块分最多为(n*10)分，在此基础上除以(消耗时间*重置次数+1*提示次数+1*0.1)。
         return (int) (blockSource * 10 / ((TIME - lastTime) * (refreshCounts+1) * (tipCounts+1) * 0.1));
