@@ -28,7 +28,7 @@ public class EntryPanel extends JPanel {
     private Sound touchSound;
 
     public EntryPanel(){
-        this.setLayout(new BorderLayout(250,100));
+        this.setLayout(new BorderLayout(250,60));
         try {
             touchSound = new Sound(Sound.Path.TOUCH_SOUND);
         } catch (IOException | UnsupportedAudioFileException e) {
@@ -48,7 +48,7 @@ public class EntryPanel extends JPanel {
         exitBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"退出游戏");
         startBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"开始游戏");
         returnBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"返回");
-        titlePanel = new JPanel(new BorderLayout(30,0));
+        titlePanel = new JPanel(new BorderLayout(15,0));
         levelPanel = new JPanel(new GridLayout(4,1,5,5));
         enterPanel = new JPanel(new GridLayout(2,1,5,50));
         switchPanel = new JPanel(new CardLayout(10,10));
@@ -99,7 +99,7 @@ public class EntryPanel extends JPanel {
         levelPanel.add(returnBtn);
         titlePanel.add(BorderLayout.EAST, new JPanel());
         titlePanel.add(BorderLayout.WEST, new JPanel());
-        titlePanel.add(BorderLayout.CENTER, new JLabel(new ImageIcon("img/title.png")));
+        titlePanel.add(BorderLayout.CENTER, new JLabel(new ScaleIcon("img/title.png")));
         enterPanel.add(startBtn);
         enterPanel.add(exitBtn);
         switchPanel.add(enterPanel, "enter");

@@ -226,6 +226,8 @@ public class GameMap implements GameRules{
 
     public boolean isSingleConner(Point firstPoint, Point secondPoint) {
         //如果是单拐点连通的话，两个可能的拐点一定与这两个点同行或者同列
+        int cnt1 = 1;
+        int cnt2 = 1;
         Point mayConner1 = new Point();
         Point mayConner2 = new Point();
         mayConner1.setX(firstPoint.getx());
@@ -235,16 +237,17 @@ public class GameMap implements GameRules{
         //两个点id不相同，直接返回false
         if(map[firstPoint.getx()][firstPoint.gety()] != map[secondPoint.getx()][secondPoint.gety()] && map[firstPoint.getx()][firstPoint.gety()] != 0 && map[secondPoint.getx()][secondPoint.gety()] != 0) return false;
         //如果两个拐点均不为0，则不可能单拐点连通，返回false
-        if(map[mayConner1.getx()][mayConner1.gety()] !=0 && map[mayConner2.getx()][mayConner2.gety()] != 0) return false;
+        if (map[mayConner1.getx()][mayConner1.gety()] != 0) cnt1 = 0;
+        if (map[mayConner2.getx()][mayConner2.gety()] != 0) cnt2 = 0;
         //判断可能的拐点1是否与两个点都连通
-        if(isStraightLink(firstPoint, mayConner1)) {
+        if(isStraightLink(firstPoint, mayConner1) && cnt1 == 1) {
             if(isStraightLink(secondPoint, mayConner1)) {
                 firstConner = mayConner1;
                 return true;
             }
         }
         //判断可能的拐点2是否与两个点都连通
-        if(isStraightLink(firstPoint, mayConner2)) {
+        if(isStraightLink(firstPoint, mayConner2) && cnt2 == 1) {
             if(isStraightLink(secondPoint, mayConner2)) {
                 firstConner = mayConner2;
                 return true;
