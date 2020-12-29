@@ -9,6 +9,11 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class EntryPanel extends JPanel {
+    
+    public final String TEXT_EASY = "简单";
+    public final String TEXT_NORM = "中等";
+    public final String TEXT_HARD = "困难";
+    
     private JButton[] levelButton;
     private JButton startBtn;
     private JButton exitBtn;
@@ -32,21 +37,23 @@ public class EntryPanel extends JPanel {
         }
 
         //region ...initial components
+        Icon defaultIcon  = new ScaleIcon("img/button_default.png");
+        Icon pressedIcon = new ScaleIcon("img/button_pressed.png");
         LevelChangeListenerList = new EventListenerList();
         clientExitListenerList = new EventListenerList();
         levelButton = new JButton[3];
-        levelButton[0] = new JButton("简单");
-        levelButton[1] = new JButton("中等");
-        levelButton[2] = new JButton("困难");
-        exitBtn = new JButton("退出游戏");
-        startBtn = new JButton("开始游戏");
-        returnBtn = new JButton("返回");
+        levelButton[0] = new IconButton(defaultIcon, pressedIcon, defaultIcon,TEXT_EASY);
+        levelButton[1] = new IconButton(defaultIcon, pressedIcon, defaultIcon,TEXT_NORM);
+        levelButton[2] = new IconButton(defaultIcon, pressedIcon, defaultIcon,TEXT_HARD);
+        exitBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"退出游戏");
+        startBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"开始游戏");
+        returnBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"返回");
         titlePanel = new JPanel(new BorderLayout(30,0));
         levelPanel = new JPanel(new GridLayout(4,1,5,5));
         enterPanel = new JPanel(new GridLayout(2,1,5,50));
         switchPanel = new JPanel(new CardLayout(10,10));
 
-        Font font1 = new Font("楷体", Font.BOLD, 25);
+        Font font1 = new Font("楷体", Font.BOLD, 30);
 
         startBtn.setFont(font1);
         startBtn.setFocusPainted(false);
@@ -114,9 +121,9 @@ public class EntryPanel extends JPanel {
     private void invokeLevelChangeListener(ActionEvent e){
         for (ActionListener listener : LevelChangeListenerList.getListeners(ActionListener.class)) {
             int level = switch (e.getActionCommand()){
-                case "简单" -> GameClient.EASY;
-                case "困难" -> GameClient.DIFF;
-                case "中等" -> GameClient.MED;
+                case TEXT_EASY -> GameClient.EASY;
+                case TEXT_HARD -> GameClient.DIFF;
+                case TEXT_NORM -> GameClient.MED;
                 default -> 0;
             };
             listener.actionPerformed(new ActionEvent(e.getSource(), level, e.getActionCommand()));

@@ -90,7 +90,6 @@ public class GamePanel extends JPanel {
         //endregion
 
         //region ...initial blocks
-        //TODO 使用迭代器
         GameMapItr it = map.Iterator();
         while (it.hasNext()){
             int id = it.next();
@@ -99,16 +98,6 @@ public class GamePanel extends JPanel {
             block.setPointOnMap(p);
             blocks.add(block);
         }
-        //test
-//        for (int y = 0; y < level+2; y++) {
-//            for (int x = 0; x < level+2; x++) {
-//                gm.game.Point p = new gm.game.Point(y,x);
-//                int id = map.returnID(p);
-//                Block block = BlockFactory.INSTANCE.getBlock(id);
-//                block.setPointOnMap(p);
-//                blocks.add(block);
-//            }
-//        }
 
         for (Block b : blocks) {
             b.addBlockClickedListener(e -> {

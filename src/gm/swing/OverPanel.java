@@ -5,10 +5,10 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class OverPanel extends JPanel {
-    private JLabel point;
-    private JLabel time;
+    private final JLabel point;
+    private final JLabel time;
 
-    private JLabel resultLabel;
+    private final JLabel resultLabel;
 
     private final JButton exit;
     private final JButton restart;
@@ -20,16 +20,21 @@ public class OverPanel extends JPanel {
         JPanel labelPanel1 = new JPanel(new GridLayout(4,1,5,20));
         JPanel labelPanel2 = new JPanel(new GridLayout(4,1,5,20));
         JPanel buttonPanel = new JPanel(new GridLayout(1,5,20,20));
-        JPanel titlePanel = new JPanel(new GridLayout(1,3,1,1));
+        JPanel titlePanel = new JPanel(new GridLayout(1,3,20,1));
         JLabel pointLabel = new JLabel("最终得分：");
         JLabel timeLabel = new JLabel("花费时间：");
-        resultLabel = new JLabel("胜利");
+        Icon defaultIcon  = new ScaleIcon("img/button_default.png");
+        Icon pressedIcon = new ScaleIcon("img/button_pressed.png");
+        resultLabel = new JLabel();
         point = new JLabel("");
         time = new JLabel("");
-        exit = new JButton("返回");
-        restart = new JButton("重试");
+        exit = new IconButton(defaultIcon, pressedIcon, defaultIcon,"返回");
+        restart = new IconButton(defaultIcon, pressedIcon, defaultIcon,"重试");
 
         Font font = new Font("黑体", Font.BOLD, 50);
+
+        exit.setFont(new Font("宋体", Font.BOLD, 20));
+        restart.setFont(new Font("宋体", Font.BOLD, 20));
 
         resultLabel.setFont(font);
         resultLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -63,9 +68,9 @@ public class OverPanel extends JPanel {
         buttonPanel.add(exit);
         buttonPanel.add(new JPanel());
 
-        titlePanel.add(new JPanel());
+        //titlePanel.add(new JLabel());
         titlePanel.add(resultLabel);
-        titlePanel.add(new JPanel());
+        //titlePanel.add(new JLabel());
 
         container.add(BorderLayout.WEST, labelPanel1);
         container.add(BorderLayout.CENTER, labelPanel2);
@@ -97,11 +102,13 @@ public class OverPanel extends JPanel {
 
     public void setWin(boolean isWin){
         if(isWin){
-            resultLabel.setText("成功");
-            resultLabel.setForeground(MessagePanel.MY_GREEN);
+//            resultLabel.setText("成功");
+//            resultLabel.setForeground(MessagePanel.MY_GREEN)；
+            resultLabel.setIcon(new ImageIcon("img/success.png"));
         } else {
-            resultLabel.setText("失败");
-            resultLabel.setForeground(MessagePanel.MY_RED);
+//            resultLabel.setText("失败");
+//            resultLabel.setForeground(MessagePanel.MY_RED);
+            resultLabel.setIcon(new ImageIcon("img/defeat.png"));
         }
     }
 }
