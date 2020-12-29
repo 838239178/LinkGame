@@ -291,7 +291,7 @@ public class GameMap implements GameRules{
 
     //初始化地图
     public void initMap() {
-        int numI = mapSize / 2;
+        int numI = mapSize;
         int num = mapSize * mapSize / numI;
         int num1 = 0;
         int x = 0;

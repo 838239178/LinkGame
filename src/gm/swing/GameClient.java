@@ -275,7 +275,7 @@ public class GameClient extends JFrame {
     private void gamePause() {
         if(sceneName.equals(PLAY_SCENE)) {
             messagePanel.stopCountDown();
-            JOptionPane.showMessageDialog(this, "游戏已暂停，点击继续进行游戏", "暂停", JOptionPane.QUESTION_MESSAGE, new ImageIcon("img/b1.png"));
+            JOptionPane.showMessageDialog(this, "游戏已暂停，点击继续进行游戏", "暂停", JOptionPane.QUESTION_MESSAGE, new ImageIcon("img/pauseIcon.png"));
             messagePanel.startCountDown();
         }
     }
