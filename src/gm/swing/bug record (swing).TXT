@@ -2,7 +2,7 @@
 
 1. 2020.12.27 得分不发生变化，一直为0
 reason: 分数计算有问题，导致计算结果恒为零
-solution：
+solution：修复MessagePanel.getSource, 分数计算公式分母未优先计算且可能为0的问题
 
 2. 2020.12.27 边界处，双拐点连通情况无法正确消除方块
 reason: 未在GamePanel中预留一圈空白方块，导致拐点找不到。
@@ -22,4 +22,8 @@ solution：GameClient.gameOver时调用MessagePanel.stopCountdown停止计时器
 
 6. 2020.12.27 提示第二次以后出现NullPointException
 reason: GameMap.autoConnex出错
+solution: 交给Xu处理
+
+7. 2020.12.29 单拐点连通出现拐点在同类方块上的错误情况
+reason: GameMap.isConnex返回结果有误
 solution: 交给Xu处理

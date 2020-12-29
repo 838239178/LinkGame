@@ -3,15 +3,16 @@ package gm.game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class GameMap implements GameRules{
     public static final int BLANK_BLOCK = 0;
 
-    private int mapSize;
+    private final int mapSize;
     protected Point firstConner;
     protected Point secondConner;
     protected int kkk = 1;
-    private int[][] map;
+    private final int[][] map;
 
 
     public GameMap(int mapSize) {
@@ -20,13 +21,38 @@ public class GameMap implements GameRules{
         initMap();
     }
 
-//    public int getMapSize() {
-//        return mapSize;
-//    }
-//
-//    public void setMapSize(int mapSize) {
-//        this.mapSize = mapSize;
-//    }
+    class Itr implements GameMapItr {
+        int cursor = 0;
+        int lastRet = -1;
+
+        @Override
+        public boolean hasNext() {
+            return cursor < map.length * map.length;
+        }
+
+        @Override
+        public Integer next() {
+            int i = cursor;
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            cursor = i + 1;
+            lastRet = i;
+            return map[i / map.length][i % map.length];
+        }
+
+        @Override
+        public Point lastIndex(){
+            if(lastRet == -1) {
+                throw new NoSuchElementException();
+            }
+            return new Point(lastRet/map.length, lastRet%map.length);
+        }
+    }
+
+    public GameMapItr Iterator() {
+        return new Itr();
+    }
 
     //判断是否连通的方法，并记录所以拐点，返回LinkResult
     public LinkResult isConnex(Point firstPoint, Point secondPoint) {
@@ -98,17 +124,18 @@ public class GameMap implements GameRules{
     //自动寻找两个可相消的点。成功返回LinkResult，失败抛出RuntimeException
     public LinkResult autoConnex(){
         int n = 1;
-        kkk--;
+        int kk = kkk - 1;
         LinkResult linkResult = new LinkResult();
-        while(n <= kkk) {
+        while(n <= kk) {
             int k = 1;
             int i1 = 0;
             int j1 = 0;
             Point firstPoint = new Point();
             Point secondPoint = new Point();
             //共kkk组图片，所以先找到第一组图片的第一张图片所在的点
+            // while(j1 != mapSize && i1 != mapSize) {
             for (int i = 1; i < map.length - 1 && k == 1; i++) {
-                for(int j = 1; j < map[i].length - 1; j++) {
+                for (int j = j1 + 1; j < map[i].length - 1; j++) {
                     if (map[i][j] == n) {
                         i1 = i;
                         j1 = j;
@@ -119,19 +146,29 @@ public class GameMap implements GameRules{
                     }
                 }
             }
+            //当锁定的第一个点的列坐标等于mapSize时，因为要从它的下一个数开始搜索，所以直接把i1++，j1重置为0或-1
+            if (j1 == mapSize) {
+                i1++;
+                j1 = -1;
+            }
             //找到第一个ID为1的点后，去找它之后所以ID为1的点，并分别进行连通性判断
-            for (int i = i1 ; i < map.length - 1; i++) {
+            for (int i = i1; i < map.length - 1; i++) {
                 for (int j = j1 + 1; j < map[i].length - 1; j++) {
                     if (map[i][j] == n) {
                         secondPoint.setX(i);
                         secondPoint.setY(j);
                         linkResult = isConnex(firstPoint, secondPoint);
                         //若连通返回linkRuselt
-                        if(linkResult.getLinkType() != LinkType.NO_LINK) return linkResult;
+                        if (linkResult.getLinkType() != LinkType.NO_LINK) return linkResult;
+                        //当在此列中没有搜索到可连接点时，开始下一轮循环，并把j1置为0；
+                        j1 = 0;
                         continue;
                     }
                 }
+                //换行时，要把j1置为0，不然有时候会访问不到j1所在列前面的数
+                j1 = 0;
             }
+            //}
             //找不到n就加1，找下一组组图片
             n++;
         }

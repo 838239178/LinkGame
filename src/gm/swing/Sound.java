@@ -58,6 +58,14 @@ public class Sound {
         return duration;
     }
 
+    public void stop(){
+        dataLine.stop();
+    }
+
+    public boolean isPlaying(){
+        return dataLine.isRunning();
+    }
+
     public void play() {
         new Thread(() -> {
             try {

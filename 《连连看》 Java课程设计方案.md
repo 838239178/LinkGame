@@ -1,6 +1,6 @@
 # 《连连看》 Java课程设计方案 
 
-> @author 施嘉宏	@startDate 2020.11.20	@lastModifiedDate 2020.12.14
+> @author 施嘉宏	@startDate 2020.11.20	@lastModifiedDate 2020.12.03
 
 ## 目录
 
@@ -26,7 +26,7 @@
 
 位于窗口上方，提示栏包括游戏的标题和游戏的具体信息，包括游戏剩余时间(s)，时间进度条(%)和得分情况。
 
-得分：根据时间、重置次数、消去方块得出。其中消去方块分最多为(n\*10)分，在此基础上除以(消耗时间\*重置次数*0.1)。
+得分：根据时间、重置次数、消去方块得出。其中消去方块分最多为(n\*25)分，在此基础上除以(消耗时间\*重置次数\*提示次数\*0.1)。
 
 #### 3.菜单栏
 
@@ -46,7 +46,8 @@
 
 #### 界面结构图
 
-http://assets.processon.com/chart_image/5fbe6589079129461564cb97.png
+<div align=center><img src="http://assets.processon.com/chart_image/5fbe6589079129461564cb97.png" alt="界面结构" style="zoom:50%;" />
+
 
 ### 类的封装
 
@@ -178,7 +179,7 @@ http://assets.processon.com/chart_image/5fbe6589079129461564cb97.png
 
 #### 3.生成方块分布数据
 
-根据地图大小，创建一个二维数组，并在里面随机添加方块的ID。每种类型的方块添加**(n*n)/i**个，共**(n*n)/2i**组。根据**n**的不同，**i**需要改变为**n**的最大约数（且小于等于**i**的最大值）。
+根据地图大小，创建一个二维数组，并在里面随机添加方块的ID。每种类型的方块添加**(n*n)/i**个，共**(n*n)/2i**组。根据**n**的不同，**i**需要改变为**n*n**的最大约数（且小于等于**i**的最大值）。
 
 ### 核心算法
 
@@ -219,12 +220,13 @@ http://assets.processon.com/chart_image/5fbe6589079129461564cb97.png
 
 #### 判断流程图
 
-http://assets.processon.com/chart_image/5fb9fe8b6376895bf97aa12a.png
+<div align=left><img src="http://assets.processon.com/chart_image/5fb9fe8b6376895bf97aa12a.png" alt="判断顺序" style="zoom:65%;" />
+
 
 
 #### 连通示意图
 
-https://i.loli.net/2020/11/22/mxpfO8b29MYSCET.png
+<div align=center><img src="https://i.loli.net/2020/11/22/mxpfO8b29MYSCET.png" alt="判断顺序" style="zoom:80%;" />
 
 ### 类的封装
 
@@ -233,8 +235,8 @@ https://i.loli.net/2020/11/22/mxpfO8b29MYSCET.png
 枚举类型，表示四种方块的连通方式（包括一种无法连通）。
 
 - STRAIGHT_LINK
-- SINGLECORNER_LINK
-- DOUBLECORNER_LINK
+- SINGLE_CORNER_LINK
+- DOUBLE_CORNER_LINK
 - NO_LINK
 
 #### GameMap

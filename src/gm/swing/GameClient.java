@@ -1,8 +1,12 @@
 package gm.swing;
 
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,6 +17,10 @@ public class GameClient extends JFrame {
     public final static int DIFF = 10;
     public final static int MED = 8;
     public final static int EASY = 6;
+    
+    public final String PLAY_SCENE = "play";
+    public final String ENTRY_SCENE = "entry";
+    public final String OVER_SCENE = "over";
 
     private final int default_width = 780;
     private final int default_height = 750;
@@ -32,6 +40,7 @@ public class GameClient extends JFrame {
     private String sceneName;
 
     private Sound bgm;
+    private TimerTask bgmPlayTask;
 
     public GameClient() {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -65,6 +74,7 @@ public class GameClient extends JFrame {
             JMenu settingMenu = new JMenu("Setting (Alt+S)");
             JMenu gameMenu = new JMenu("Game (Alt+G)");
             JMenu resizeMenu = new JMenu("Resize");
+            JMenu soundMenu = new JMenu("Sound");
             JMenuItem restart = new JMenuItem("Restart");
             JMenuItem refresh = new JMenuItem("Refresh");
             JMenuItem tips = new JMenuItem("Tips");
@@ -75,32 +85,24 @@ public class GameClient extends JFrame {
             settingMenu.setMnemonic(KeyEvent.VK_S);
 
             quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
-            quit.addActionListener(e -> {
-                System.out.println("quit");
-                if (sceneName.equals("play"))
-                    gameExit();
-            });
+            quit.addActionListener(e -> gameExit());
 
-            resizeMenu.add("restore").addActionListener(e -> scaleSize(1));
-            resizeMenu.add("x2").addActionListener(e -> scaleSize(2));
-            resizeMenu.add("x3").addActionListener(e -> scaleSize(3));
+            resizeMenu.add("restore").addActionListener(e -> scaleSize(1,1));
+            resizeMenu.add("large").addActionListener(e -> scaleSize(1.41, 1.25));
 
-            settingMenu.add("on/off bgm").addActionListener(e->{
+            soundMenu.add("bgm off").addActionListener(e -> stopBGM());
+            soundMenu.add("bgm on").addActionListener(e -> playBGM());
 
-            });
+            settingMenu.add(soundMenu);
             settingMenu.add(resizeMenu);
             settingMenu.add("about").addActionListener(e -> aboutDialog.setVisible(true));
 
             restart.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
-            restart.addActionListener(e -> {
-                if (sceneName.equals("play")) {
-                    restartGame();
-                }
-            });
+            restart.addActionListener(e -> restartGame());
 
             refresh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK));
             refresh.addActionListener(e -> {
-                if (sceneName.equals("play")) {
+                if (sceneName.equals(PLAY_SCENE)) {
                     gamePanel.refreshBlocks();
                     messagePanel.addRefreshCount(1);
                 }
@@ -108,7 +110,7 @@ public class GameClient extends JFrame {
 
             tips.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK));
             tips.addActionListener(e -> {
-                if (sceneName.equals("play")) {
+                if (sceneName.equals(PLAY_SCENE)) {
                     gamePanel.tipBlock();
                     messagePanel.addTipCount(1);
                 }
@@ -129,9 +131,9 @@ public class GameClient extends JFrame {
         //endregion
 
         //region ...add components
-        switchPanel.add(mainPanel, "play");
-        switchPanel.add(entryPanel, "entry");
-        switchPanel.add(overPanel, "over");
+        switchPanel.add(mainPanel, PLAY_SCENE);
+        switchPanel.add(entryPanel, ENTRY_SCENE);
+        switchPanel.add(overPanel, OVER_SCENE);
 
         this.add(BorderLayout.CENTER, switchPanel);
         this.add(BorderLayout.SOUTH, new JPanel());
@@ -148,7 +150,7 @@ public class GameClient extends JFrame {
         this.pack();
         this.setSize(default_width, default_height);
         this.setResizable(false);
-        Point location = (Point) this.getLocation();
+        Point location = this.getLocation();
         this.setLocation(location.x - getWidth() / 2, location.y - getHeight() / 2);
         //endregion
 
@@ -163,21 +165,45 @@ public class GameClient extends JFrame {
         //endregion
 
         //程序由entry panel开始
-        switchPanel("entry");
+        switchPanel(ENTRY_SCENE);
 
-        //循环播放背景音乐
         try {
             bgm = new Sound(Sound.Path.BGM);
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    System.out.println("bgm play, duration:" + bgm.getDuration());
-                    bgm.play();
-                }
-            }, 1, bgm.getDuration());
+            playBGM();
         } catch (IOException | UnsupportedAudioFileException e) {
             e.printStackTrace();
         }
+
+        //TEST
+        this.setResizable(true);
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                System.out.println(getSize());
+            }
+        });
+    }
+
+
+
+    public void playBGM() {
+        //循环播放背景音乐
+        if(bgm == null) return;
+        if(bgm.isPlaying()) return;
+        bgmPlayTask = new TimerTask() {
+            @Override
+            public void run() {
+                bgm.play();
+            }
+        };
+        new Timer().schedule(bgmPlayTask, 1, bgm.getDuration());
+    }
+
+    public void stopBGM(){
+        if(bgm == null) return;
+        if(!bgm.isPlaying()) return;
+        bgm.stop();
+        bgmPlayTask.cancel();
     }
 
     /**
@@ -197,9 +223,13 @@ public class GameClient extends JFrame {
         }
     }
 
-    public void scaleSize(int scale) {
-        this.setSize(default_width * scale, default_height * scale);
+    public void scaleSize(double scaleWid, double scaleHei) {
+        this.setSize(default_width * scaleWid, default_height * scaleHei);
         backImage.setBounds(0, 0, getWidth(), getHeight());
+    }
+
+    public void setSize(double width, double height){
+        this.setSize((int)width, (int)height);
     }
 
     private void switchPanel(String panelName) {
@@ -210,7 +240,6 @@ public class GameClient extends JFrame {
     /**
      * 游戏开始入口，只由 entry panel 调用
      * 初始化 game panel 和 message panel
-     *
      */
     private void gameStart() {
         //region ...reset gap of main panel
@@ -228,7 +257,7 @@ public class GameClient extends JFrame {
 
         gamePanel.addLinkBlockListener(e -> {
             messagePanel.addBlockSource(1);
-            if(messagePanel.isFinished()){
+            if (messagePanel.isFinished()) {
                 gameOver();
             }
         });
@@ -241,47 +270,54 @@ public class GameClient extends JFrame {
         setAllPanelOpaque(messagePanel, false);
 
         messagePanel.startCountDown();
-        switchPanel("play");
+        switchPanel(PLAY_SCENE);
     }
 
     private void restartGame() {
-        gamePanel.reset();
-        messagePanel.reset();
-        switchPanel("play");
+        if(sceneName.equals(PLAY_SCENE) || sceneName.equals(OVER_SCENE)) {
+            gamePanel.reset();
+            messagePanel.reset();
+            switchPanel(PLAY_SCENE);
+        }
     }
 
     private void gamePause() {
-        //TODO 模态窗口+暂停计时器
-        messagePanel.stopCountDown();
-        JOptionPane.showMessageDialog(this,"游戏已暂停，点击继续进行游戏","暂停", JOptionPane.QUESTION_MESSAGE, new ImageIcon("img/b1.png"));
-        messagePanel.startCountDown();
+        if(sceneName.equals(PLAY_SCENE)) {
+            messagePanel.stopCountDown();
+            JOptionPane.showMessageDialog(this, "游戏已暂停，点击继续进行游戏", "暂停", JOptionPane.QUESTION_MESSAGE, new ImageIcon("img/b1.png"));
+            messagePanel.startCountDown();
+        }
     }
 
     /**
      * 点击了菜单栏上的退出或结算页面的返回时
-     *
      */
     private void gameExit() {
-        if(!sceneName.equals("entry")) {
+        if (!sceneName.equals(ENTRY_SCENE)) {
             messagePanel.stopCountDown();
             mainPanel.remove(gamePanel);
             mainPanel.remove(messagePanel);
             gamePanel = null;
             messagePanel = null;
-            switchPanel("entry");
+            switchPanel(ENTRY_SCENE);
         }
     }
 
     /**
      * 倒计时结束或者消除所有方块时
-     *
      */
     private void gameOver() {
-        if(sceneName.equals("play")) {
+        if (sceneName.equals(PLAY_SCENE)) {
             overPanel.setSpendTime(messagePanel.getSpendTime());
-            overPanel.setWin(messagePanel.getLastTime()>0);
+            overPanel.setWin(messagePanel.getLastTime() > 0);
             overPanel.setPoints(messagePanel.getSource());
-            switchPanel("over");
+            //等待最后的动画播放完整
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    switchPanel(OVER_SCENE);
+                }
+            }, 200);
         }
     }
 
