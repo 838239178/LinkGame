@@ -33,8 +33,8 @@ public class OverPanel extends JPanel {
 
         Font font = new Font("黑体", Font.BOLD, 50);
 
-        exit.setFont(new Font("宋体", Font.BOLD, 20));
-        restart.setFont(new Font("宋体", Font.BOLD, 20));
+        exit.setFont(new Font("楷体", Font.BOLD, 20));
+        restart.setFont(new Font("楷体", Font.BOLD, 20));
 
         resultLabel.setFont(font);
         resultLabel.setHorizontalAlignment(SwingConstants.CENTER);
