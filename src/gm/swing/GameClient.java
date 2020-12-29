@@ -173,15 +173,6 @@ public class GameClient extends JFrame {
         } catch (IOException | UnsupportedAudioFileException e) {
             e.printStackTrace();
         }
-
-        //TEST
-        this.setResizable(true);
-        this.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                System.out.println(getSize());
-            }
-        });
     }
 
 

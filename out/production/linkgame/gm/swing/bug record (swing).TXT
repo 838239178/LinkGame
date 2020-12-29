@@ -23,3 +23,7 @@ solution：GameClient.gameOver时调用MessagePanel.stopCountdown停止计时器
 6. 2020.12.27 提示第二次以后出现NullPointException
 reason: GameMap.autoConnex出错
 solution: 交给Xu处理
+
+7. 2020.12.29 单拐点连通出现拐点在同类方块上的错误情况
+reason: GameMap.isConnex返回结果有误
+solution: 交给Xu处理
