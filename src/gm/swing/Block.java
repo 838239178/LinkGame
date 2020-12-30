@@ -21,7 +21,7 @@ public class Block extends JComponent {
     public Block(int id, Image icon) {
         this.id = id;
         this.icon = icon;
-        this.background = new ImageIcon("img/b_back.png").getImage();
+        this.background = BlockFactory.INSTANCE.getBackImg();
         this.blockClickedListenerList = new EventListenerList();
         this.addMouseListener(new MouseListenerInner());
     }

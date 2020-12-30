@@ -42,11 +42,11 @@ public class MessagePanel extends JPanel {
 
         timer = new Timer();
 
-        JPanel barPanel = new JPanel(new BorderLayout(30, 1));
+        JPanel barPanel = new JPanel(new BorderLayout(30, 15));
         timeBar = new JProgressBar(0, time);
         lastTimeLabel = new JLabel("Last Time");
         sourceLabel = new JLabel("得分: 10");
-        title = new JLabel("连连看");
+        title = new JLabel(new ScaleIcon("img/title_small.png"));
 
 
         lastTimeLabel.setFont(new Font("微软雅黑", Font.BOLD, 15));
@@ -72,6 +72,8 @@ public class MessagePanel extends JPanel {
         barPanel.add(BorderLayout.WEST, lastTimeLabel);
         barPanel.add(BorderLayout.CENTER, timeBar);
         barPanel.add(BorderLayout.EAST, sourceLabel);
+        barPanel.add(BorderLayout.NORTH, new JPanel());
+        barPanel.add(BorderLayout.NORTH, new JPanel());
     }
 
     /**
@@ -127,13 +129,13 @@ public class MessagePanel extends JPanel {
         return lastTime;
     }
 
-    public int getSpendTime(){
-        return TIME-getLastTime();
+    public int getSpendTime() {
+        return TIME - getLastTime();
     }
 
     public int getSource() {
         //得分公式
-        return (int) ((blockSource * LEVEL * LEVEL) / ((TIME - lastTime)/(LEVEL/4) * (refreshCounts+1) * (tipCounts*5+1) * 0.1));
+        return (int) ((blockSource * LEVEL * LEVEL) / ((getSpendTime() / (LEVEL*LEVEL / 32.0)) * (refreshCounts + 1) * (tipCounts * 5 + 1) * 0.5));
     }
 
     public void reset() {

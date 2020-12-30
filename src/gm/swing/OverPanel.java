@@ -16,10 +16,10 @@ public class OverPanel extends JPanel {
     public OverPanel() {
         this.setLayout(new BorderLayout(20,1));
 
-        JPanel container = new JPanel(new BorderLayout(50,1));
+        JPanel container = new JPanel(new BorderLayout(50,10));
         JPanel labelPanel1 = new JPanel(new GridLayout(4,1,5,20));
         JPanel labelPanel2 = new JPanel(new GridLayout(4,1,5,20));
-        JPanel buttonPanel = new JPanel(new GridLayout(1,5,20,20));
+        JPanel buttonPanel = new JPanel(new GridLayout(1,5,1,1));
         JPanel titlePanel = new JPanel(new GridLayout(1,3,20,1));
         JLabel pointLabel = new JLabel("最终得分：");
         JLabel timeLabel = new JLabel("花费时间：");
@@ -33,8 +33,8 @@ public class OverPanel extends JPanel {
 
         Font font = new Font("黑体", Font.BOLD, 50);
 
-        exit.setFont(new Font("楷体", Font.BOLD, 20));
-        restart.setFont(new Font("楷体", Font.BOLD, 20));
+        exit.setFont(new Font("楷体", Font.BOLD, 30));
+        restart.setFont(new Font("楷体", Font.BOLD, 30));
 
         resultLabel.setFont(font);
         resultLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -102,12 +102,8 @@ public class OverPanel extends JPanel {
 
     public void setWin(boolean isWin){
         if(isWin){
-//            resultLabel.setText("成功");
-//            resultLabel.setForeground(MessagePanel.MY_GREEN)；
             resultLabel.setIcon(new ImageIcon("img/success.png"));
         } else {
-//            resultLabel.setText("失败");
-//            resultLabel.setForeground(MessagePanel.MY_RED);
             resultLabel.setIcon(new ImageIcon("img/defeat.png"));
         }
     }

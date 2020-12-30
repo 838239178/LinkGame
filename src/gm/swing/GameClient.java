@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
@@ -300,6 +301,7 @@ public class GameClient extends JFrame {
      */
     private void gameOver() {
         if (sceneName.equals(PLAY_SCENE)) {
+            messagePanel.stopCountDown();
             overPanel.setSpendTime(messagePanel.getSpendTime());
             overPanel.setWin(messagePanel.getLastTime() > 0);
             overPanel.setPoints(messagePanel.getSource());
