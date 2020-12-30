@@ -116,8 +116,8 @@ public class MessagePanel extends JPanel {
 
     private int getTimeLimit(int level) {
         return switch (level) {
-            case GameClient.DIFF -> 120;
-            case GameClient.MED -> 90;
+            case GameClient.HARD -> 120;
+            case GameClient.NORM -> 90;
             case GameClient.EASY -> 40;
             default -> 0;
         };
@@ -132,9 +132,8 @@ public class MessagePanel extends JPanel {
     }
 
     public int getSource() {
-        //消去方块分最多为(n*n*5)分，在此基础上除以(消耗时间*重置次数+1*提示次数+1*0.1)。
-        return (int) (blockSource * blockSource * 5 / ((TIME - lastTime) * (refreshCounts+1) * (tipCounts+1) * 0.1));
-        //return  blockSource*10;
+        //得分公式
+        return (int) ((blockSource * LEVEL * LEVEL) / ((TIME - lastTime)/(LEVEL/4) * (refreshCounts+1) * (tipCounts*5+1) * 0.1));
     }
 
     public void reset() {
@@ -144,8 +143,6 @@ public class MessagePanel extends JPanel {
 
     public void addBlockSource(int source) {
         blockSource += source;
-        //test
-        //System.out.println("blockSource=" + blockSource + ", source=" + getSource());
     }
 
     public boolean isFinished() {

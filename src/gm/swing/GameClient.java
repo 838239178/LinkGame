@@ -1,12 +1,9 @@
 package gm.swing;
 
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.sql.Time;
-import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,9 +11,13 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
 public class GameClient extends JFrame {
-    public final static int DIFF = 10;
-    public final static int MED = 8;
+    public final static int HARD = 10;
+    public final static int NORM = 8;
     public final static int EASY = 6;
+
+    public final static String TEXT_EASY = "简单";
+    public final static String TEXT_NORM = "中等";
+    public final static String TEXT_HARD = "困难";
     
     public final String PLAY_SCENE = "play";
     public final String ENTRY_SCENE = "entry";
@@ -236,9 +237,9 @@ public class GameClient extends JFrame {
         //region ...reset gap of main panel
         {
             BorderLayout layout = (BorderLayout) mainPanel.getLayout();
-            int vGap = 15 - getGameLevel();
-            double hGap = vGap * (getWidth() * 1.5 / getHeight());
-            layout.setHgap((int) hGap);
+            int vGap = 10 - getGameLevel();
+            int hGap = vGap * (getWidth() / getHeight());
+            layout.setHgap(hGap);
             layout.setVgap(vGap);
         }
         //endregion
@@ -312,9 +313,29 @@ public class GameClient extends JFrame {
         }
     }
 
-    private int getGameLevel() {
+    public int getGameLevel() {
         return gameLevel;
     }
+
+    public static int toDifficulty(String difficultyText){
+        return switch (difficultyText){
+            case TEXT_EASY -> GameClient.EASY;
+            case TEXT_HARD -> GameClient.HARD;
+            case TEXT_NORM -> GameClient.NORM;
+            default -> throw new NoSuchElementException("no such difficulty");
+        };
+    }
+
+    public static String toDifficulty(int difficultyDegree){
+        return switch (difficultyDegree){
+            case EASY -> TEXT_EASY;
+            case NORM -> TEXT_NORM;
+            case HARD -> TEXT_HARD;
+            default -> throw new NoSuchElementException("no such difficulty");
+        };
+    }
+
+
 
     public static void main(String[] args) {
         EventQueue.invokeLater(GameClient::new);

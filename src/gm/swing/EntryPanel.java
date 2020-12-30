@@ -7,13 +7,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 public class EntryPanel extends JPanel {
-    
-    public final String TEXT_EASY = "简单";
-    public final String TEXT_NORM = "中等";
-    public final String TEXT_HARD = "困难";
-    
     private JButton[] levelButton;
     private JButton startBtn;
     private JButton exitBtn;
@@ -42,9 +38,9 @@ public class EntryPanel extends JPanel {
         LevelChangeListenerList = new EventListenerList();
         clientExitListenerList = new EventListenerList();
         levelButton = new JButton[3];
-        levelButton[0] = new IconButton(defaultIcon, pressedIcon, defaultIcon,TEXT_EASY);
-        levelButton[1] = new IconButton(defaultIcon, pressedIcon, defaultIcon,TEXT_NORM);
-        levelButton[2] = new IconButton(defaultIcon, pressedIcon, defaultIcon,TEXT_HARD);
+        levelButton[0] = new IconButton(defaultIcon, pressedIcon, defaultIcon, GameClient.TEXT_EASY);
+        levelButton[1] = new IconButton(defaultIcon, pressedIcon, defaultIcon, GameClient.TEXT_NORM);
+        levelButton[2] = new IconButton(defaultIcon, pressedIcon, defaultIcon, GameClient.TEXT_HARD);
         exitBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"退出游戏");
         startBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"开始游戏");
         returnBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"返回");
@@ -120,12 +116,7 @@ public class EntryPanel extends JPanel {
 
     private void invokeLevelChangeListener(ActionEvent e){
         for (ActionListener listener : LevelChangeListenerList.getListeners(ActionListener.class)) {
-            int level = switch (e.getActionCommand()){
-                case TEXT_EASY -> GameClient.EASY;
-                case TEXT_HARD -> GameClient.DIFF;
-                case TEXT_NORM -> GameClient.MED;
-                default -> 0;
-            };
+            int level = GameClient.toDifficulty(e.getActionCommand());
             listener.actionPerformed(new ActionEvent(e.getSource(), level, e.getActionCommand()));
         }
         switchPanel("enter");
