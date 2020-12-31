@@ -135,7 +135,7 @@ public class MessagePanel extends JPanel {
 
     public int getSource() {
         //得分公式
-        return (int) ((blockSource * LEVEL * LEVEL) / ((getSpendTime() / (LEVEL*LEVEL / 32.0)) * (refreshCounts + 1) * (tipCounts * 5 + 1) * 0.5));
+        return (int) ((blockSource * LEVEL * LEVEL) / ((getSpendTime() / (LEVEL * LEVEL / 32.0) + refreshCounts * 2 + tipCounts * 4) * 0.5));
     }
 
     public void reset() {
