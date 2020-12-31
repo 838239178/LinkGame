@@ -13,10 +13,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
+import java.util.logging.Logger;
 
 public class GamePanel extends JPanel {
     private GameMap map;
@@ -69,9 +68,6 @@ public class GamePanel extends JPanel {
 
     public GamePanel(int level) {
         //region ...default initial
-        this.LEVEL = level;
-        this.map = new GameMap(level);
-        this.timer = new Timer();
         try {
             linkSound = new Sound(Sound.Path.LINK_SOUND);
             touchSound = new Sound(Sound.Path.TOUCH_SOUND);
@@ -80,13 +76,16 @@ public class GamePanel extends JPanel {
             linkSound = null;
             touchSound = null;
         }
+        this.LEVEL = level;
+        this.map = new GameMap(level);
+        this.timer = new Timer();
         this.linkBlockListeners = new EventListenerList();
         this.blocks = new ArrayList<>();
         this.linePoints = new ArrayList<>();
         this.currentBlock1 = null;
         this.currentBlock2 = null;
         this.drawLine = false;
-        this.setLayout(new GridLayout(level+2, level+2, 1, 1));
+        this.setLayout(new GridLayout(level + 2, level + 2, 1, 1));
         //endregion
 
         //region ...initial blocks
@@ -119,16 +118,16 @@ public class GamePanel extends JPanel {
                     return;
                 }
 
-
                 if (currentBlock1 == null) currentBlock1 = current;
                 else if (currentBlock2 == null) currentBlock2 = current;
                 else {
+                    //如果已经选择了两个
                     current.setSelected(false);
                     return;
                 }
 
                 if (isSelectedDoubleBlock()) {
-                    tryLinkBlocks();
+                    GlobalThreadPool.INSTANCE.submit(this::tryLinkBlocks);
                 }
             });
             this.add(b);
@@ -154,9 +153,10 @@ public class GamePanel extends JPanel {
      * 根据 game map 下标找到对应方块
      *
      * @param pointOnMap 在GameMap中的下标
-     * @return 对应的Block对象，未找到返回null
+     * @return 对应的Block对象，未找到抛出异常
+     * @throws NoSuchElementException 如果提供了错误的pointOnMap,则抛出此异常。
      */
-    private Block findBlockByMapPoint(Point pointOnMap) {
+    private Block findBlockByMapPoint(Point pointOnMap) throws NoSuchElementException {
         /*
         可行方案
         game map 下标对应 block 数组下标 pointOnMap.y * n + pointOnMap.x
@@ -165,7 +165,7 @@ public class GamePanel extends JPanel {
         for (Block block : blocks) {
             if (block.getPointOnMap().equals(pointOnMap)) return block;
         }
-        return null;
+        throw new NoSuchElementException("couldn't find block");
     }
 
 
@@ -224,7 +224,8 @@ public class GamePanel extends JPanel {
                 }
             }, delay);
 
-        } catch (NullPointerException e) {
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
             cancelSelect();
             drawLine = false;
         }
@@ -352,8 +353,7 @@ public class GamePanel extends JPanel {
                     block2.setSelected(false);
                 }
             }, 500);
-        } catch (NullPointerException e) {
-            System.out.println("tip failed, link result has null point");
+        } catch (NoSuchElementException e) {
             e.printStackTrace();
         }
     }
@@ -362,11 +362,13 @@ public class GamePanel extends JPanel {
      * 提示两个可消除方块
      */
     public void tipBlock() {
-        LinkResult res = map.autoConnex();
-        if(res.getLinkType() != LinkType.NO_LINK) {
-            tip(res);
-        } else {
-            System.out.println("tip: no link");
+        try {
+            LinkResult res = map.autoConnex();
+            if (res.getLinkType() != LinkType.NO_LINK) {
+                tip(res);
+            }
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
         }
     }
 

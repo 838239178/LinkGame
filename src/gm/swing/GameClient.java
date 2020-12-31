@@ -6,11 +6,16 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
+/**
+ * 游戏入口类
+ * 确定整体逻辑
+ * 游戏由EntryPanel开始，从EntryPanel中结束。
+ * EntryPanel->GamePanel->OverPanel->(EntryPanel/GamePanel)
+ */
 public class GameClient extends JFrame {
     public final static int HARD = 10;
     public final static int NORM = 8;
@@ -19,7 +24,7 @@ public class GameClient extends JFrame {
     public final static String TEXT_EASY = "简单";
     public final static String TEXT_NORM = "中等";
     public final static String TEXT_HARD = "困难";
-    
+
     public final String PLAY_SCENE = "play";
     public final String ENTRY_SCENE = "entry";
     public final String OVER_SCENE = "over";
@@ -59,6 +64,7 @@ public class GameClient extends JFrame {
         menuBar = new JMenuBar();
 
         entryPanel.addLevelChangeListener(e -> {
+            //规定从event的id中获取难度系数
             gameLevel = e.getID();
             gameStart();
         });
@@ -104,17 +110,17 @@ public class GameClient extends JFrame {
 
             refresh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK));
             refresh.addActionListener(e -> {
-                if (sceneName.equals(PLAY_SCENE)) {
-                    gamePanel.refreshBlocks();
+                if (isOnScene(PLAY_SCENE)) {
                     messagePanel.addRefreshCount(1);
+                    GlobalThreadPool.INSTANCE.submit(() -> gamePanel.refreshBlocks());
                 }
             });
 
             tips.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK));
             tips.addActionListener(e -> {
-                if (sceneName.equals(PLAY_SCENE)) {
-                    gamePanel.tipBlock();
+                if (isOnScene(PLAY_SCENE)) {
                     messagePanel.addTipCount(1);
+                    GlobalThreadPool.INSTANCE.submit(() -> gamePanel.tipBlock());
                 }
             });
 
@@ -167,7 +173,7 @@ public class GameClient extends JFrame {
         //endregion
 
         //程序由entry panel开始
-        switchPanel(ENTRY_SCENE);
+        switchScene(ENTRY_SCENE);
 
         try {
             bgm = new Sound(Sound.Path.BGM);
@@ -176,7 +182,6 @@ public class GameClient extends JFrame {
             e.printStackTrace();
         }
     }
-
 
 
     public void playBGM() {
@@ -221,13 +226,13 @@ public class GameClient extends JFrame {
         backImage.setBounds(0, 0, getWidth(), getHeight());
     }
 
-    public void setSize(double width, double height){
-        this.setSize((int)width, (int)height);
+    public void setSize(double width, double height) {
+        this.setSize((int) width, (int) height);
     }
 
-    private void switchPanel(String panelName) {
-        ((CardLayout) switchPanel.getLayout()).show(switchPanel, panelName);
-        sceneName = panelName;
+    private void switchScene(String scene) {
+        ((CardLayout) switchPanel.getLayout()).show(switchPanel, scene);
+        sceneName = scene;
     }
 
     /**
@@ -263,19 +268,19 @@ public class GameClient extends JFrame {
         setAllPanelOpaque(messagePanel, false);
 
         messagePanel.startCountDown();
-        switchPanel(PLAY_SCENE);
+        switchScene(PLAY_SCENE);
     }
 
     private void restartGame() {
-        if(sceneName.equals(PLAY_SCENE) || sceneName.equals(OVER_SCENE)) {
+        if (isOnScene(PLAY_SCENE) || isOnScene(OVER_SCENE)) {
             gamePanel.reset();
             messagePanel.reset();
-            switchPanel(PLAY_SCENE);
+            switchScene(PLAY_SCENE);
         }
     }
 
     private void gamePause() {
-        if(sceneName.equals(PLAY_SCENE)) {
+        if (isOnScene(PLAY_SCENE)) {
             messagePanel.stopCountDown();
             JOptionPane.showMessageDialog(this, "游戏已暂停，点击继续进行游戏", "暂停", JOptionPane.QUESTION_MESSAGE, new ImageIcon("img/pauseIcon.png"));
             messagePanel.startCountDown();
@@ -286,13 +291,13 @@ public class GameClient extends JFrame {
      * 点击了菜单栏上的退出或结算页面的返回时
      */
     private void gameExit() {
-        if (!sceneName.equals(ENTRY_SCENE)) {
+        if (!isOnScene(ENTRY_SCENE)) {
             messagePanel.stopCountDown();
             mainPanel.remove(gamePanel);
             mainPanel.remove(messagePanel);
             gamePanel = null;
             messagePanel = null;
-            switchPanel(ENTRY_SCENE);
+            switchScene(ENTRY_SCENE);
         }
     }
 
@@ -300,7 +305,7 @@ public class GameClient extends JFrame {
      * 倒计时结束或者消除所有方块时
      */
     private void gameOver() {
-        if (sceneName.equals(PLAY_SCENE)) {
+        if (isOnScene(PLAY_SCENE)) {
             messagePanel.stopCountDown();
             overPanel.setSpendTime(messagePanel.getSpendTime());
             overPanel.setWin(messagePanel.getLastTime() > 0);
@@ -309,18 +314,22 @@ public class GameClient extends JFrame {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    switchPanel(OVER_SCENE);
+                    switchScene(OVER_SCENE);
                 }
             }, 200);
         }
+    }
+
+    public boolean isOnScene(String sceneName) {
+        return this.sceneName.equals(sceneName);
     }
 
     public int getGameLevel() {
         return gameLevel;
     }
 
-    public static int toDifficulty(String difficultyText){
-        return switch (difficultyText){
+    public static int toDifficulty(String difficultyText) {
+        return switch (difficultyText) {
             case TEXT_EASY -> GameClient.EASY;
             case TEXT_HARD -> GameClient.HARD;
             case TEXT_NORM -> GameClient.NORM;
@@ -328,15 +337,14 @@ public class GameClient extends JFrame {
         };
     }
 
-    public static String toDifficulty(int difficultyDegree){
-        return switch (difficultyDegree){
+    public static String toDifficulty(int difficultyDegree) {
+        return switch (difficultyDegree) {
             case EASY -> TEXT_EASY;
             case NORM -> TEXT_NORM;
             case HARD -> TEXT_HARD;
             default -> throw new NoSuchElementException("no such difficulty");
         };
     }
-
 
 
     public static void main(String[] args) {

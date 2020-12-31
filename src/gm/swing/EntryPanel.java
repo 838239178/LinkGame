@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.NoSuchElementException;
 
 public class EntryPanel extends JPanel {
     private JButton[] levelButton;
@@ -18,13 +17,17 @@ public class EntryPanel extends JPanel {
     private JPanel levelPanel;
     private JPanel enterPanel;
     private JPanel titlePanel;
+
+    private final String SCENE_LEVEL = "level";
+    private final String SCENE_ENTER = "enter";
+
     private final EventListenerList LevelChangeListenerList;
     private final EventListenerList clientExitListenerList;
 
     private Sound touchSound;
 
-    public EntryPanel(){
-        this.setLayout(new BorderLayout(250,60));
+    public EntryPanel() {
+        this.setLayout(new BorderLayout(250, 60));
         try {
             touchSound = new Sound(Sound.Path.TOUCH_SOUND);
         } catch (IOException | UnsupportedAudioFileException e) {
@@ -33,21 +36,22 @@ public class EntryPanel extends JPanel {
         }
 
         //region ...initial components
-        Icon defaultIcon  = new ScaleIcon("img/button_default.png");
+        Icon defaultIcon = new ScaleIcon("img/button_default.png");
         Icon pressedIcon = new ScaleIcon("img/button_pressed.png");
+        Icon rolloverIcon = new ScaleIcon("img/button_rollover.png");
         LevelChangeListenerList = new EventListenerList();
         clientExitListenerList = new EventListenerList();
         levelButton = new JButton[3];
-        levelButton[0] = new IconButton(defaultIcon, pressedIcon, defaultIcon, GameClient.TEXT_EASY);
-        levelButton[1] = new IconButton(defaultIcon, pressedIcon, defaultIcon, GameClient.TEXT_NORM);
-        levelButton[2] = new IconButton(defaultIcon, pressedIcon, defaultIcon, GameClient.TEXT_HARD);
-        exitBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"退出游戏");
-        startBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"开始游戏");
-        returnBtn = new IconButton(defaultIcon, pressedIcon, defaultIcon,"返回");
-        titlePanel = new JPanel(new BorderLayout(15,0));
-        levelPanel = new JPanel(new GridLayout(4,1,5,5));
-        enterPanel = new JPanel(new GridLayout(2,1,5,50));
-        switchPanel = new JPanel(new CardLayout(10,10));
+        levelButton[0] = new IconButton(defaultIcon, pressedIcon, rolloverIcon, GameClient.TEXT_EASY);
+        levelButton[1] = new IconButton(defaultIcon, pressedIcon, rolloverIcon, GameClient.TEXT_NORM);
+        levelButton[2] = new IconButton(defaultIcon, pressedIcon, rolloverIcon, GameClient.TEXT_HARD);
+        exitBtn = new IconButton(defaultIcon, pressedIcon, rolloverIcon, "退出游戏");
+        startBtn = new IconButton(defaultIcon, pressedIcon, rolloverIcon, "开始游戏");
+        returnBtn = new IconButton(defaultIcon, pressedIcon, rolloverIcon, "返回");
+        titlePanel = new JPanel(new BorderLayout(15, 0));
+        levelPanel = new JPanel(new GridLayout(4, 1, 5, 5));
+        enterPanel = new JPanel(new GridLayout(2, 1, 5, 50));
+        switchPanel = new JPanel(new CardLayout(10, 10));
 
         Font font1 = new Font("楷体", Font.BOLD, 30);
 
@@ -69,11 +73,11 @@ public class EntryPanel extends JPanel {
         //region ...add action listener
         returnBtn.addActionListener(e-> {
             touchSound.play();
-            switchPanel("enter");
+            switchScene(SCENE_ENTER);
         });
         startBtn.addActionListener(e-> {
             touchSound.play();
-            switchPanel("level");
+            switchScene(SCENE_LEVEL);
         });
         exitBtn.addActionListener(e-> {
             touchSound.play();
@@ -98,8 +102,8 @@ public class EntryPanel extends JPanel {
         titlePanel.add(BorderLayout.CENTER, new JLabel(new ScaleIcon("img/title.png")));
         enterPanel.add(startBtn);
         enterPanel.add(exitBtn);
-        switchPanel.add(enterPanel, "enter");
-        switchPanel.add(levelPanel,"level");
+        switchPanel.add(enterPanel, SCENE_ENTER);
+        switchPanel.add(levelPanel, SCENE_LEVEL);
         this.add(BorderLayout.CENTER, switchPanel);
         this.add(BorderLayout.NORTH, titlePanel);
         this.add(BorderLayout.WEST, new JPanel());
@@ -107,32 +111,43 @@ public class EntryPanel extends JPanel {
         this.add(BorderLayout.SOUTH, new JPanel());
         //endregion
 
-        switchPanel("entry");
+        switchScene("entry");
     }
 
-    private void switchPanel(String panelName){
-        ((CardLayout)switchPanel.getLayout()).show(switchPanel, panelName);
+    private void switchScene(String scene) {
+        ((CardLayout) switchPanel.getLayout()).show(switchPanel, scene);
     }
 
-    private void invokeLevelChangeListener(ActionEvent e){
+    /**
+     * 触发难度选择事件
+     *
+     * @param e ActionEvent 其中ID规定为难度系数
+     */
+    private void invokeLevelChangeListener(ActionEvent e) {
         for (ActionListener listener : LevelChangeListenerList.getListeners(ActionListener.class)) {
             int level = GameClient.toDifficulty(e.getActionCommand());
             listener.actionPerformed(new ActionEvent(e.getSource(), level, e.getActionCommand()));
         }
-        switchPanel("enter");
+        switchScene(SCENE_ENTER);
     }
 
-    private void invokeClientExitListener(ActionEvent e){
+    private void invokeClientExitListener(ActionEvent e) {
         for (ActionListener listener : clientExitListenerList.getListeners(ActionListener.class)) {
             listener.actionPerformed(e);
         }
     }
 
-    public void addLevelChangeListener(ActionListener l){
-        LevelChangeListenerList.add(ActionListener.class ,l);
+    /**
+     * 当难度选择后触发
+     *
+     * @param l action listener
+     */
+    public void addLevelChangeListener(ActionListener l) {
+        LevelChangeListenerList.add(ActionListener.class, l);
     }
-    public void addClientExitListener(ActionListener l){
-        clientExitListenerList.add(ActionListener.class ,l);
+
+    public void addClientExitListener(ActionListener l) {
+        clientExitListenerList.add(ActionListener.class, l);
     }
 
 }

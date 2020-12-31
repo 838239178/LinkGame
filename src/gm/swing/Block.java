@@ -10,6 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * 可复选的组件
+ * 点击一次触发Click事件
+ */
 public class Block extends JComponent {
     private int id;
     private Image icon;

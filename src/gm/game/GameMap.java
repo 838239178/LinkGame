@@ -121,7 +121,7 @@ public class GameMap implements GameRules{
         }
     }
 
-    //自动寻找两个可相消的点。成功返回LinkResult，失败抛出RuntimeException
+    //自动寻找两个可相消的点。成功返回LinkResult，失败抛出NoSuchElementException
     public LinkResult autoConnex(){
         int n = 1;
         int kk = kkk - 1;
@@ -172,8 +172,9 @@ public class GameMap implements GameRules{
             //找不到n就加1，找下一组组图片
             n++;
         }
-        //找不到也返回linkRuselt
-        return linkResult;
+
+        //找不到时
+        throw new NoSuchElementException("couldn't find result");
     }
 
     //判断是否直接连通,用于isConnex

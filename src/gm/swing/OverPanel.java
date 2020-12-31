@@ -14,22 +14,23 @@ public class OverPanel extends JPanel {
     private final JButton restart;
 
     public OverPanel() {
-        this.setLayout(new BorderLayout(20,1));
+        this.setLayout(new BorderLayout(20, 1));
 
-        JPanel container = new JPanel(new BorderLayout(50,10));
-        JPanel labelPanel1 = new JPanel(new GridLayout(4,1,5,20));
-        JPanel labelPanel2 = new JPanel(new GridLayout(4,1,5,20));
-        JPanel buttonPanel = new JPanel(new GridLayout(1,5,1,1));
-        JPanel titlePanel = new JPanel(new GridLayout(1,3,20,1));
+        JPanel container = new JPanel(new BorderLayout(50, 10));
+        JPanel labelPanel1 = new JPanel(new GridLayout(4, 1, 5, 20));
+        JPanel labelPanel2 = new JPanel(new GridLayout(4, 1, 5, 20));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 5, 1, 1));
+        JPanel titlePanel = new JPanel(new GridLayout(1, 3, 20, 1));
         JLabel pointLabel = new JLabel("最终得分：");
         JLabel timeLabel = new JLabel("花费时间：");
-        Icon defaultIcon  = new ScaleIcon("img/button_default.png");
+        Icon defaultIcon = new ScaleIcon("img/button_default.png");
         Icon pressedIcon = new ScaleIcon("img/button_pressed.png");
+        Icon rolloverIcon = new ScaleIcon("img/button_rollover.png");
         resultLabel = new JLabel();
         point = new JLabel("");
         time = new JLabel("");
-        exit = new IconButton(defaultIcon, pressedIcon, defaultIcon,"返回");
-        restart = new IconButton(defaultIcon, pressedIcon, defaultIcon,"重试");
+        exit = new IconButton(defaultIcon, pressedIcon, rolloverIcon, "返回");
+        restart = new IconButton(defaultIcon, pressedIcon, rolloverIcon, "重试");
 
         Font font = new Font("黑体", Font.BOLD, 50);
 
