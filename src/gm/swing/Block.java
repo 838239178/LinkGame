@@ -60,11 +60,13 @@ public class Block extends JComponent {
         blockClickedListenerList.add(ActionListener.class, l);
     }
 
+    /**
+     * 重置自身为空方块
+     *
+     */
     public void clear() {
         id = GameMap.BLANK_BLOCK;
         icon = null;
-        //test
-        //System.out.println("block clear");
     }
 
     @Override

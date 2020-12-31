@@ -119,8 +119,8 @@ public class MessagePanel extends JPanel {
     private int getTimeLimit(int level) {
         return switch (level) {
             case GameClient.HARD -> 120;
-            case GameClient.NORM -> 90;
-            case GameClient.EASY -> 40;
+            case GameClient.NORM -> 80;
+            case GameClient.EASY -> 35;
             default -> 0;
         };
     }
