@@ -4,6 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
+/**
+ * 指定三个图片生成的按钮
+ * 继承自 JButton
+ *
+ * @author 施嘉宏
+ */
 public class IconButton extends JButton {
     private String text;
 

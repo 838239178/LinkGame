@@ -3,10 +3,16 @@ package gm.swing;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.logging.Logger;
 
+/**
+ * @author 施嘉宏
+ */
 public class AboutDialog extends JDialog {
     private static final String INFORMATION_HTML = "info/information.html";
 
@@ -38,7 +44,6 @@ public class AboutDialog extends JDialog {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         panel.add(editorPane);
         this.add(BorderLayout.CENTER, panel);

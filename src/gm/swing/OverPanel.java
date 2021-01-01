@@ -3,7 +3,14 @@ package gm.swing;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
+/**
+ * 游戏结束时绘制，负责显示最终结果，可重新开始游戏或返回EntryPanel。
+ *
+ * @author 施嘉宏
+ */
 public class OverPanel extends JPanel {
     private final JLabel point;
     private final JLabel time;
@@ -12,6 +19,8 @@ public class OverPanel extends JPanel {
 
     private final JButton exit;
     private final JButton restart;
+
+    private boolean isWin;
 
     public OverPanel() {
         this.setLayout(new BorderLayout(20, 1));
@@ -69,9 +78,7 @@ public class OverPanel extends JPanel {
         buttonPanel.add(exit);
         buttonPanel.add(new JPanel());
 
-        //titlePanel.add(new JLabel());
         titlePanel.add(resultLabel);
-        //titlePanel.add(new JLabel());
 
         container.add(BorderLayout.WEST, labelPanel1);
         container.add(BorderLayout.CENTER, labelPanel2);
@@ -83,6 +90,17 @@ public class OverPanel extends JPanel {
         this.add(BorderLayout.SOUTH, new JPanel());
         this.add(BorderLayout.EAST, new JPanel());
         this.add(BorderLayout.NORTH, new JPanel());
+
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                if(isWin){
+                    resultLabel.setIcon(new ImageIcon("img/success.png"));
+                } else {
+                    resultLabel.setIcon(new ImageIcon("img/defeat.png"));
+                }
+            }
+        });
     }
 
     public void addExitActonListener(ActionListener l){
@@ -102,10 +120,6 @@ public class OverPanel extends JPanel {
     }
 
     public void setWin(boolean isWin){
-        if(isWin){
-            resultLabel.setIcon(new ImageIcon("img/success.png"));
-        } else {
-            resultLabel.setIcon(new ImageIcon("img/defeat.png"));
-        }
+        this.isWin = isWin;
     }
 }

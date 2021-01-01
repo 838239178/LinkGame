@@ -17,6 +17,11 @@ import java.util.*;
 import java.util.Timer;
 import java.util.logging.Logger;
 
+/**
+ * 负责游戏进行的场景
+ *
+ * @author 施嘉宏
+ */
 public class GamePanel extends JPanel {
     private GameMap map;
 
@@ -140,8 +145,8 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         if (drawLine) {
-            g2d.setStroke(new BasicStroke(8f));
-            g2d.setColor(Color.red);
+            g2d.setStroke(new BasicStroke(5f));
+            g2d.setColor(MyColor.MY_YELLOW);
             for (int i = 0; i < linePoints.size() - 1; i++) {
                 Line2D line = new Line2D.Double(linePoints.get(i), linePoints.get(i + 1));
                 g2d.draw(line);
@@ -218,8 +223,8 @@ public class GamePanel extends JPanel {
                     drawLine = false;
                     currentBlock2.clear();
                     currentBlock1.clear();
-                    cancelSelect();
                     linePoints.clear();
+                    cancelSelect();
                     repaint();
                 }
             }, delay);

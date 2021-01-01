@@ -9,14 +9,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.RoundRectangle2D;
 
 /**
  * 可复选的组件
  * 点击一次触发Click事件
+ *
+ * @author 施嘉宏
  */
 public class Block extends JComponent {
     private int id;
     private Image icon;
+    private final Image select;
     private final Image background;
     private Point pointOnMap;
     private boolean selected;
@@ -25,6 +29,7 @@ public class Block extends JComponent {
     public Block(int id, Image icon) {
         this.id = id;
         this.icon = icon;
+        this.select = BlockFactory.INSTANCE.getSelectImg();
         this.background = BlockFactory.INSTANCE.getBackImg();
         this.blockClickedListenerList = new EventListenerList();
         this.addMouseListener(new MouseListenerInner());
@@ -38,12 +43,11 @@ public class Block extends JComponent {
     protected void paintComponent(Graphics g) {
         if(!isBlank()) {
             Graphics2D g2d = (Graphics2D) g;
+            //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.drawImage(background, 0, 0, getWidth(), getHeight(), null);
             g2d.drawImage(icon, 10, 10, getWidth() - 20, getHeight() - 20, null);
             if (isSelected()) {
-                g2d.setColor(Color.red);
-                g2d.setStroke(new BasicStroke(getWidth() / 10.0f));
-                g2d.drawRect(0, 0, getWidth(), getHeight());
+                g2d.drawImage(select,0,0,getWidth(), getHeight(),null);
             }
         }
     }
@@ -65,8 +69,7 @@ public class Block extends JComponent {
      *
      */
     public void clear() {
-        id = GameMap.BLANK_BLOCK;
-        icon = null;
+        BlockFactory.INSTANCE.makeBlank(this);
     }
 
     @Override

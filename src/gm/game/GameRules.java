@@ -1,6 +1,8 @@
 package gm.game;
 
-
+/**
+ * @author 徐志浩
+ */
 public interface GameRules {
     //判断是否连通的方法，并记录所以拐点，返回LinkResult
     public LinkResult isConnex(Point firstPoint, Point secondPoint);

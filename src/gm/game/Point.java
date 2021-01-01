@@ -1,5 +1,8 @@
 package gm.game;
 
+/**
+ * @author 徐志浩
+ */
 public class Point extends java.awt.Point {
 
     public Point(int x, int y) {
@@ -7,6 +10,7 @@ public class Point extends java.awt.Point {
     }
 
     public Point() {
+        super();
     }
 
     public int getx() {

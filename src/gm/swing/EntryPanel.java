@@ -8,6 +8,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+/**
+ * 游戏初始界面，负责启动开始游戏前的准备工作
+ * 负责功能：
+ * 1.设定难度 2.开始游戏 3.退出程序
+ *
+ * @author 施嘉宏
+ */
 public class EntryPanel extends JPanel {
     private JButton[] levelButton;
     private JButton startBtn;

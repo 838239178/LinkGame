@@ -5,9 +5,11 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 /**
- * 用于实现背景图随窗口缩放
+ * 用于实现图片随容器缩放
  *
  * @author zhongweijian
+ * from: https://blog.csdn.net/zhongweijian/article/details/7668926
+ * Copyright Agreement: CC 4.0 BY-SA
  */
 public class ScaleIcon implements Icon {
     private final Icon icon;

@@ -15,6 +15,8 @@ import javax.swing.*;
  * 确定整体逻辑
  * 游戏由EntryPanel开始，从EntryPanel中结束。
  * EntryPanel->GamePanel->OverPanel->(EntryPanel/GamePanel)
+ *
+ * @author 施嘉宏
  */
 public class GameClient extends JFrame {
     public final static int HARD = 10;
@@ -58,7 +60,7 @@ public class GameClient extends JFrame {
         //region ...initial panels
         aboutDialog = new AboutDialog(this);
         switchPanel = new JPanel(new CardLayout());
-        mainPanel = new JPanel(new BorderLayout(2, 2));
+        mainPanel = new JPanel(new BorderLayout(1, 1));
         entryPanel = new EntryPanel();
         overPanel = new OverPanel();
         menuBar = new JMenuBar();
@@ -169,7 +171,7 @@ public class GameClient extends JFrame {
         this.getLayeredPane().add(backImage, Integer.valueOf(Integer.MIN_VALUE));
         this.getLayeredPane().setOpaque(true);
         this.getLayeredPane().setBackground(Color.darkGray);
-        setAllPanelOpaque((JPanel) this.getContentPane(), false);
+        GlobalThreadPool.INSTANCE.submit(()-> setAllPanelOpaque((JPanel) this.getContentPane(), false));
         //endregion
 
         //程序由entry panel开始
@@ -240,16 +242,6 @@ public class GameClient extends JFrame {
      * 初始化 game panel 和 message panel
      */
     private void gameStart() {
-        //region ...reset gap of main panel
-        {
-            BorderLayout layout = (BorderLayout) mainPanel.getLayout();
-            int vGap = 10 - getGameLevel();
-            int hGap = vGap * (getWidth() / getHeight());
-            layout.setHgap(hGap);
-            layout.setVgap(vGap);
-        }
-        //endregion
-
         messagePanel = new MessagePanel(getGameLevel());
         gamePanel = new GamePanel(getGameLevel());
 

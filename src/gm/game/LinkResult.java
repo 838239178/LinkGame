@@ -1,7 +1,8 @@
 package gm.game;
 
-import java.awt.*;
-
+/**
+ * @author 徐志浩
+ */
 public class LinkResult {
     private Point firstPoint = null;
     private Point secondPoint = null;

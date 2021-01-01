@@ -9,10 +9,12 @@ import java.util.Timer;
 
 import javax.swing.event.EventListenerList;
 
+/**
+ * 与GamePanel在同一场景中绘制，负责记录游戏分数、时间等信息并绘制提供给用户
+ *
+ * @author 施嘉宏
+ */
 public class MessagePanel extends JPanel {
-    public static final Color MY_GREEN = new Color(93, 191, 8);
-    public static final Color MY_RED = new Color(243, 68, 68);
-
     private final JLabel sourceLabel;
     private final JLabel title;
     private final JProgressBar timeBar;
@@ -59,7 +61,7 @@ public class MessagePanel extends JPanel {
         title.setFont(new Font("楷体", Font.BOLD, 40));
 
         timeBar.setValue(time);
-        timeBar.setForeground(MessagePanel.MY_GREEN);
+        timeBar.setForeground(MyColor.MY_GREEN);
         timeBar.setBackground(Color.gray);
         timeBar.setStringPainted(false);
 
@@ -89,7 +91,7 @@ public class MessagePanel extends JPanel {
                     invokeTimeOutListener(new ActionEvent(this, 0, "time out"));
                     this.cancel();
                 }
-                if (lastTime < TIME / 4) timeBar.setForeground(MessagePanel.MY_RED);
+                if (lastTime < TIME / 4) timeBar.setForeground(MyColor.MY_RED);
                 lastTimeLabel.setText("剩余时间：" + " " + lastTime + "s");
                 sourceLabel.setText("得分: " + getSource());
                 repaint();
@@ -112,7 +114,7 @@ public class MessagePanel extends JPanel {
         stopCountDown();
         lastTime = TIME;
         timeBar.setValue(TIME);
-        timeBar.setForeground(MessagePanel.MY_GREEN);
+        timeBar.setForeground(MyColor.MY_GREEN);
         startCountDown();
     }
 

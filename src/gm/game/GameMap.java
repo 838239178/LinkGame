@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * @author 徐志浩
+ */
 public class GameMap implements GameRules{
     public static final int BLANK_BLOCK = 0;
 
@@ -178,7 +181,7 @@ public class GameMap implements GameRules{
     }
 
     //判断是否直接连通,用于isConnex
-    public boolean isStraightLink(Point firstPoint, Point secondPoint) {
+    private boolean isStraightLink(Point firstPoint, Point secondPoint) {
         //两个点id不相同，直接返回false
         if(map[firstPoint.getx()][firstPoint.gety()] != map[secondPoint.getx()][secondPoint.gety()] && map[firstPoint.getx()][firstPoint.gety()] != 0 && map[secondPoint.getx()][secondPoint.gety()] != 0) return false;
         //当两个点在同一行的时候，就去判断列这一路是否连通
@@ -225,7 +228,7 @@ public class GameMap implements GameRules{
         return false;
     }
 
-    public boolean isSingleConner(Point firstPoint, Point secondPoint) {
+    private boolean isSingleConner(Point firstPoint, Point secondPoint) {
         //如果是单拐点连通的话，两个可能的拐点一定与这两个点同行或者同列
         int cnt1 = 1;
         int cnt2 = 1;
@@ -258,7 +261,7 @@ public class GameMap implements GameRules{
         return false;
     }
 
-    public boolean isDoubleConner(Point firstPoint, Point secondPoint) {
+    private boolean isDoubleConner(Point firstPoint, Point secondPoint) {
         //两个点id不相同，直接返回false
         if(map[firstPoint.getx()][firstPoint.gety()] != map[secondPoint.getx()][secondPoint.gety()] && map[firstPoint.getx()][firstPoint.gety()] != 0 && map[secondPoint.getx()][secondPoint.gety()] != 0) return false;
         //循环找与第一个点在同一行的点中是否有某个点，它分别与第一个点直接连通又与第二个点单拐点连通，有返回true
@@ -291,7 +294,7 @@ public class GameMap implements GameRules{
     }
 
     //初始化地图
-    public void initMap() {
+    private void initMap() {
         int numI = mapSize;
         int num = mapSize * mapSize / numI;
         int num1 = 0;
