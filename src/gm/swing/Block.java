@@ -24,6 +24,7 @@ public class Block extends JComponent {
     private final Image background;
     private Point pointOnMap;
     private boolean selected;
+    private boolean drawSelected;       //可用于非选择性绘制选择框。仅用于绘制，无其他任何效果。
     private final EventListenerList blockClickedListenerList;
 
     public Block(int id, Image icon) {
@@ -39,6 +40,11 @@ public class Block extends JComponent {
         return (id == GameMap.BLANK_BLOCK);
     }
 
+    public void setDrawSelected(boolean isDraw) {
+        this.drawSelected = isDraw;
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         if(!isBlank()) {
@@ -46,7 +52,7 @@ public class Block extends JComponent {
             //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.drawImage(background, 0, 0, getWidth(), getHeight(), null);
             g2d.drawImage(icon, 10, 10, getWidth() - 20, getHeight() - 20, null);
-            if (isSelected()) {
+            if (isSelected() || drawSelected) {
                 g2d.drawImage(select,0,0,getWidth(), getHeight(),null);
             }
         }
@@ -107,22 +113,22 @@ public class Block extends JComponent {
     }
 
     private class MouseListenerInner extends MouseAdapter {
-        private boolean onPressed = false;
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            Rectangle rec = new Rectangle(getWidth(), getHeight());
-            if (rec.contains(e.getPoint())) {
-                onPressed = true;
-            }
-        }
+//        private boolean onPressed = false;
+//
+//        @Override
+//        public void mousePressed(MouseEvent e) {
+//            Rectangle rec = new Rectangle(getWidth(), getHeight());
+//            if (rec.contains(e.getPoint())) {
+//                onPressed = true;
+//            }
+//        }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            if (onPressed && !isBlank()) {
+            if (!isBlank()) {
                 setSelected(!isSelected());
                 repaint();
-                onPressed = false;
+//                onPressed = false;
                 invokeBlockClickedListener(new ActionEvent(e.getSource(), e.getID(), "click block"));
             }
         }

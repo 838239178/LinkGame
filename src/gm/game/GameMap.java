@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 public class GameMap implements GameRules{
     public static final int BLANK_BLOCK = 0;
 
-    private final int mapSize;
+    protected final int mapSize;
     protected Point firstConner;
     protected Point secondConner;
     protected int kkk = 1;
@@ -126,6 +126,8 @@ public class GameMap implements GameRules{
 
     //自动寻找两个可相消的点。成功返回LinkResult，失败抛出NoSuchElementException
     public LinkResult autoConnex(){
+        //test
+        //long t = System.nanoTime();
         int n = 1;
         int kk = kkk - 1;
         LinkResult linkResult = new LinkResult();
@@ -162,7 +164,11 @@ public class GameMap implements GameRules{
                         secondPoint.setY(j);
                         linkResult = isConnex(firstPoint, secondPoint);
                         //若连通返回linkRuselt
-                        if (linkResult.getLinkType() != LinkType.NO_LINK) return linkResult;
+                        if (linkResult.getLinkType() != LinkType.NO_LINK) {
+                            //test
+                            //System.out.println((System.nanoTime() - t)/1000000.0);
+                            return linkResult;
+                        }
                         //当在此列中没有搜索到可连接点时，开始下一轮循环，并把j1置为0；
                         j1 = 0;
                         continue;

@@ -53,4 +53,13 @@ public class LinkResult {
     public void setLinkType(LinkType linkType) {
         this.linkType = linkType;
     }
+
+    @Override
+    public String toString() {
+        return "LinkResult{" +
+                "firstPoint=" + firstPoint +
+                ", secondPoint=" + secondPoint +
+                ", linkType=" + linkType +
+                '}';
+    }
 }

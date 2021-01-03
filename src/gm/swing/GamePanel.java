@@ -1,21 +1,18 @@
 package gm.swing;
 
-import gm.game.GameMap;
-import gm.game.GameMapItr;
-import gm.game.LinkResult;
-import gm.game.LinkType;
+import gm.game.*;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import java.awt.*;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.util.*;
 import java.util.Timer;
-import java.util.logging.Logger;
 
 /**
  * 负责游戏进行的场景
@@ -299,18 +296,20 @@ public class GamePanel extends JPanel {
     }
 
     /**
-     * 立即清除引用，但过一段时间再取消选取
+     * 立即清除引用和选取，但绘制选取框一段时间
      * @param delay 等待的时间（ms)
      */
     private void cancelSelect(int delay) {
         final Block temp1 = currentBlock1;
         final Block temp2 = currentBlock2;
-        currentBlock2 = currentBlock1 = null;
+        cancelSelect();
+        if(temp1 != null) temp1.setDrawSelected(true);
+        if(temp2 != null) temp2.setDrawSelected(true);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(temp1 != null) temp1.setSelected(false);
-                if(temp2 != null) temp2.setSelected(false);
+                if(temp1 != null) temp1.setDrawSelected(false);
+                if(temp2 != null) temp2.setDrawSelected(false);
             }
         },delay);
     }
@@ -321,6 +320,7 @@ public class GamePanel extends JPanel {
      */
     private void updateBlocks() {
         for (Block block : blocks) {
+            block.setSelected(false);       //全部重置为未选择状态
             int idOnMap = map.returnID((gm.game.Point) block.getPointOnMap());
             if (block.getId() != idOnMap) {
                 BlockFactory.INSTANCE.resetBlock(block, idOnMap);
@@ -347,15 +347,15 @@ public class GamePanel extends JPanel {
         try {
             Block block1 = findBlockByMapPoint(link.getFirstPoint());
             Block block2 = findBlockByMapPoint(link.getSecondPoint());
-            block1.setSelected(true);
-            block2.setSelected(true);
+            block1.setDrawSelected(true);
+            block2.setDrawSelected(true);
 
             //提示一段时间后消除提示
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    block1.setSelected(false);
-                    block2.setSelected(false);
+                    block1.setDrawSelected(false);
+                    block2.setDrawSelected(false);
                 }
             }, 500);
         } catch (NoSuchElementException e) {
