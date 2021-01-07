@@ -106,7 +106,7 @@ public class EntryPanel extends JPanel {
         levelPanel.add(returnBtn);
         titlePanel.add(BorderLayout.EAST, new JPanel());
         titlePanel.add(BorderLayout.WEST, new JPanel());
-        titlePanel.add(BorderLayout.CENTER, new JLabel(new ScaleIcon("img/title.png")));
+        titlePanel.add(BorderLayout.CENTER, new JLabel(new ScaleIcon("img/title.png", ScaleIcon.SCALE_FULL, ScaleIcon.ALIGN_CENTER)));
         enterPanel.add(startBtn);
         enterPanel.add(exitBtn);
         switchPanel.add(enterPanel, SCENE_ENTER);

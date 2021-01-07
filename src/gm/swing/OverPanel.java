@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
 
 /**
  * 游戏结束时绘制，负责显示最终结果，可重新开始游戏或返回EntryPanel。
@@ -95,9 +96,9 @@ public class OverPanel extends JPanel {
             @Override
             public void componentShown(ComponentEvent e) {
                 if(isWin){
-                    resultLabel.setIcon(new ImageIcon("img/success.png"));
+                    resultLabel.setIcon(new ScaleIcon("img/success.png", ScaleIcon.HEIGHT_FIXED, ScaleIcon.ALIGN_CENTER));
                 } else {
-                    resultLabel.setIcon(new ImageIcon("img/defeat.png"));
+                    resultLabel.setIcon(new ScaleIcon("img/defeat.png", ScaleIcon.HEIGHT_FIXED, ScaleIcon.ALIGN_CENTER));
                 }
             }
         });

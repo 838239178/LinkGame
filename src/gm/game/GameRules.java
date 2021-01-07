@@ -19,6 +19,6 @@ public interface GameRules {
     //重新随机地图的方法
     public void changeMap();
 
-    //自动寻找两个可相消的点。成功返回LinkResult，失败抛出RuntimeException
+    //自动寻找两个可相消的点。成功返回LinkResult，失败抛出Exception
     public LinkResult autoConnex();
 }
