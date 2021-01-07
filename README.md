@@ -6,7 +6,7 @@ java课程设计《连连看》
 
 java-1.0.2.jar
 
-JetBrains Java Annotations ：[homepage](https://github.com/JetBrains/java-annotations)
+JetBrains Java Annotations ： [HomePage](https://github.com/JetBrains/java-annotations)
 ```
 
 ```
