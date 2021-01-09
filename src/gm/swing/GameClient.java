@@ -1,7 +1,10 @@
 package gm.swing;
 
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Timer;
@@ -98,7 +101,7 @@ public class GameClient extends JFrame {
             quit.addActionListener(e -> gameExit());
 
             resizeMenu.add("restore").addActionListener(e -> scaleSize(1,1));
-            resizeMenu.add("large").addActionListener(e -> scaleSize(1.41, 1.25));
+            resizeMenu.add("large").addActionListener(e -> scaleSize(1.28, 1.28));
 
             soundMenu.add("bgm off").addActionListener(e -> stopBGM());
             soundMenu.add("bgm on").addActionListener(e -> playBGM());

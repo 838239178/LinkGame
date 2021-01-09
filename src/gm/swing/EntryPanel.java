@@ -34,7 +34,6 @@ public class EntryPanel extends JPanel {
     private Sound touchSound;
 
     public EntryPanel() {
-        this.setLayout(new BorderLayout(250, 60));
         try {
             touchSound = new Sound(Sound.Path.TOUCH_SOUND);
         } catch (IOException | UnsupportedAudioFileException e) {
@@ -56,8 +55,8 @@ public class EntryPanel extends JPanel {
         startBtn = new IconButton(defaultIcon, pressedIcon, rolloverIcon, "开始游戏");
         returnBtn = new IconButton(defaultIcon, pressedIcon, rolloverIcon, "返回");
         titlePanel = new JPanel(new BorderLayout(15, 0));
-        levelPanel = new JPanel(new GridLayout(4, 1, 5, 5));
-        enterPanel = new JPanel(new GridLayout(2, 1, 5, 50));
+        levelPanel = new JPanel(new GridLayout(4, 1, 1, 5));
+        enterPanel = new JPanel(new GridLayout(2, 1, 1, 50));
         switchPanel = new JPanel(new CardLayout(10, 10));
 
         Font font1 = new Font("楷体", Font.BOLD, 30);
@@ -104,18 +103,21 @@ public class EntryPanel extends JPanel {
             levelPanel.add(button);
         }
         levelPanel.add(returnBtn);
-        titlePanel.add(BorderLayout.EAST, new JPanel());
-        titlePanel.add(BorderLayout.WEST, new JPanel());
-        titlePanel.add(BorderLayout.CENTER, new JLabel(new ScaleIcon("img/title.png", ScaleIcon.SCALE_FULL, ScaleIcon.ALIGN_CENTER)));
+        titlePanel.add(BorderLayout.CENTER, new JLabel(new ScaleIcon("img/title.png", ScaleIcon.HEIGHT_FIXED, ScaleIcon.ALIGN_CENTER)));
         enterPanel.add(startBtn);
         enterPanel.add(exitBtn);
         switchPanel.add(enterPanel, SCENE_ENTER);
         switchPanel.add(levelPanel, SCENE_LEVEL);
-        this.add(BorderLayout.CENTER, switchPanel);
-        this.add(BorderLayout.NORTH, titlePanel);
-        this.add(BorderLayout.WEST, new JPanel());
-        this.add(BorderLayout.EAST, new JPanel());
-        this.add(BorderLayout.SOUTH, new JPanel());
+
+        JPanel tempPanel = new JPanel(new BorderLayout(250,20));
+        tempPanel.add(BorderLayout.CENTER, switchPanel);
+        tempPanel.add(BorderLayout.WEST, new JPanel());
+        tempPanel.add(BorderLayout.EAST, new JPanel());
+        tempPanel.add(BorderLayout.SOUTH, new JPanel());
+
+        this.setLayout(new GridLayout(0,1,1,50));
+        this.add(titlePanel);
+        this.add(tempPanel);
         //endregion
 
         switchScene("entry");

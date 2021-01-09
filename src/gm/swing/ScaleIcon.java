@@ -42,13 +42,13 @@ public class ScaleIcon implements Icon {
         this.MODE = mode;
     }
 
-    public ScaleIcon(String file, @MagicConstant(intValues = {WIDTH_FIXED, HEIGHT_FIXED, SCALE_FULL})int mode,
-                     @MagicConstant(intValues = {ALIGN_CENTER, ALIGN_RIGHT, ALIGN_LEFT})int alignment) {
+    public ScaleIcon(String file, @MagicConstant(intValues = {WIDTH_FIXED, HEIGHT_FIXED, SCALE_FULL}) int mode,
+                     @MagicConstant(intValues = {ALIGN_CENTER, ALIGN_RIGHT, ALIGN_LEFT}) int alignment) {
         this(file, mode);
         this.setAlignment(alignment);
     }
 
-    public void setAlignment(@MagicConstant(intValues = {ALIGN_CENTER, ALIGN_RIGHT, ALIGN_LEFT}) int alignment){
+    public void setAlignment(@MagicConstant(intValues = {ALIGN_CENTER, ALIGN_RIGHT, ALIGN_LEFT}) int alignment) {
         this.alignment = alignment;
     }
 
@@ -70,8 +70,8 @@ public class ScaleIcon implements Icon {
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        float scaleWid = wid/iconWid;
-        float scaleHei = hei/iconHei;
+        float scaleWid = wid / iconWid;
+        float scaleHei = hei / iconHei;
         switch (MODE) {
             case SCALE_FULL -> {
                 g2d.scale(scaleWid, scaleHei);
@@ -98,6 +98,6 @@ public class ScaleIcon implements Icon {
             case ALIGN_LEFT -> pos.x = 0;
             default -> throw new NoSuchElementException("no such alignment");
         }
-        icon.paintIcon(c, g2d, (int)pos.x, (int)pos.y);
+        icon.paintIcon(c, g2d, (int) pos.x, (int) pos.y);
     }
 }
