@@ -66,7 +66,7 @@ public class GMapModify extends GameMap {
     @Override
     public LinkResult autoConnex() {
         //test
-        long t = System.nanoTime();
+        //long t = System.nanoTime();
         Map<Point, Boolean> isNoLink = new HashMap<>();
         GameMapItr it = super.Iterator();
         while (it.hasNext()){
@@ -75,7 +75,7 @@ public class GMapModify extends GameMap {
             LinkResult res = searchBFS(p, isNoLink);
             if(res != null) {
                 //test
-                System.out.println((System.nanoTime() - t)/1000000.0);
+                //System.out.println((System.nanoTime() - t)/1000000.0);
                 return res;
             }
             else{

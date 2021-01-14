@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+/**
+ * 统计搜索效率测试结果 取平均数
+ *
+ */
 public class test {
     enum Type {
         bfEasy(0),
@@ -32,7 +36,7 @@ public class test {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        String path = "test/test.txt";
+        String path = "src/useless/test.txt";
         Scanner scan = new Scanner(new BufferedInputStream(new FileInputStream(path)));
         double[][] data = new double[6][1000];
         int index = 0;

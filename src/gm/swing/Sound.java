@@ -67,7 +67,7 @@ public class Sound {
     }
 
     public void play() {
-        new Thread(() -> {
+        GlobalThreadPool.INSTANCE.submit(() -> {
             try {
                 dataLine.open(format, data.length*2);
                 dataLine.start();
@@ -79,6 +79,6 @@ public class Sound {
             } finally {
                 dataLine.close();
             }
-        }).start();
+        });
     }
 }
